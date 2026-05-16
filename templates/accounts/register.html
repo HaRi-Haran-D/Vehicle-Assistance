@@ -19,9 +19,7 @@
                             {{ field.label }}
                         </label>
                         {{ field }}
-                        {% if field.help_text %}
-                            <p class="text-gray-500 text-xs mt-1">{{ field.help_text|safe }}</p>
-                        {% endif %}
+
                         {% if field.errors %}
                             <p class="text-red-500 text-xs italic mt-1">{{ field.errors.0 }}</p>
                         {% endif %}
