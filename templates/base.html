@@ -1,55 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Vehicle Assist{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}AutoAssist - Vehicle Assistance & Telemetry{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
+        // Force page to load at the top on refresh
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
                     colors: {
-                        primary: '#2563eb',
-                        secondary: '#1e40af',
+                        primary: {
+                            DEFAULT: '#2563eb',
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        blueprint: {
+                            bg: '#f8fafc',
+                            grid: '#cbd5e1',
+                            orange: '#f97316',
+                            green: '#22c55e',
+                            bronze: '#b45309',
+                            slate: '#1e293b',
+                            charcoal: '#0f172a',
+                        }
+                    },
+                    animation: {
+                        'spin-slow': 'spin 30s linear infinite',
+                        'spin-slow-reverse': 'spin-reverse 30s linear infinite',
+                        'spin-medium': 'spin 15s linear infinite',
+                        'spin-medium-reverse': 'spin-reverse 15s linear infinite',
+                        'spin-fast': 'spin 5s linear infinite',
+                        'spin-fast-reverse': 'spin-reverse 5s linear infinite',
+                    },
+                    keyframes: {
+                        'spin-reverse': {
+                            'from': { transform: 'rotate(360deg)' },
+                            'to': { transform: 'rotate(0deg)' }
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        .glass {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+        html {
+            font-size: 16px !important;
+            overflow-x: hidden;
+        }
+
+        /* Modern Outfit and JetBrains Mono fonts import */
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+        /* Blueprint grid pattern background */
+        .blueprint-bg {
+            background-color: #fbfbfd;
+            background-image:
+                linear-gradient(to right, rgba(203, 213, 225, 0.18) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(203, 213, 225, 0.18) 1px, transparent 1px),
+                linear-gradient(to right, rgba(203, 213, 225, 0.06) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(203, 213, 225, 0.06) 1px, transparent 1px);
+            background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+        }
+
+        /* Glassmorphism card styled like a schematic panel */
+        .tech-panel {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            position: relative;
+            box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.12);
+        }
+
+        /* Corner brackets/ticks for technical blueprint cards */
+        .tech-corner-brackets {
+            position: relative;
+        }
+
+        .tech-corner-brackets::before,
+        .tech-corner-brackets::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-color: rgba(71, 85, 105, 0.35);
+            border-style: solid;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Top-Left */
+        .tech-corner-brackets::before {
+            top: -1px;
+            left: -1px;
+            border-width: 2px 0 0 2px;
+        }
+
+        /* Top-Right */
+        .tech-corner-brackets::after {
+            top: -1px;
+            right: -1px;
+            border-width: 2px 2px 0 0;
+        }
+
+        /* Bottom brackets inside container */
+        .corner-bottom {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .corner-bottom::before,
+        .corner-bottom::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-color: rgba(71, 85, 105, 0.35);
+            border-style: solid;
+            pointer-events: none;
+        }
+
+        /* Bottom-Left */
+        .corner-bottom::before {
+            bottom: -1px;
+            left: -1px;
+            border-width: 0 0 2px 2px;
+        }
+
+        /* Bottom-Right */
+        .corner-bottom::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 2px 2px 0;
+        }
+
+        /* Technical schematic lines */
+        .tech-line-h {
+            height: 1px;
+            background: repeating-linear-gradient(to right, rgba(148, 163, 184, 0.3) 0px, rgba(148, 163, 184, 0.3) 6px, transparent 6px, transparent 10px);
+        }
+
+        .tech-line-v {
+            width: 1px;
+            background: repeating-linear-gradient(to bottom, rgba(148, 163, 184, 0.3) 0px, rgba(148, 163, 184, 0.3) 6px, transparent 6px, transparent 10px);
+        }
+
+        /* Glowing indicator nodes */
+        .glow-orange {
+            box-shadow: 0 0 10px rgba(249, 115, 22, 0.7);
+        }
+
+        .glow-green {
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.7);
+        }
+
+        .glow-blue {
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+        }
+
+        /* custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased min-h-screen flex flex-col">
+
+<body class="blueprint-bg min-h-screen font-sans antialiased text-slate-800 flex flex-col relative overflow-x-hidden">
+
+    <!-- Background Watermark Schematic Gears (Encapsulated to prevent page shifting/cut-off) -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <!-- Giant Faded Gear -->
+        <div class="absolute top-20 right-[-100px] w-96 h-96 opacity-[0.04]">
+            <svg class="w-full h-full text-slate-600 animate-spin-slow" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+            </svg>
+        </div>
+        <!-- Giant Faded Reverse Gear -->
+        <div class="absolute bottom-20 left-[-150px] w-96 h-96 opacity-[0.03]">
+            <svg class="w-full h-full text-slate-600 animate-spin-slow-reverse" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+            </svg>
+        </div>
+    </div>
+
     <!-- Navbar -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <a href="/" class="flex-shrink-0 flex items-center">
-                        <span class="text-2xl font-bold text-primary tracking-tight">AutoAssist</span>
+                    <a href="/" class="flex-shrink-0 flex items-center space-x-3 group">
+                        <!-- Dual Gear SVG Logo -->
+                        <div class="relative w-8 h-8 flex items-center justify-center">
+                            <!-- Larger Gear (Clockwise) -->
+                            <svg class="w-7 h-7 text-primary-500 animate-spin-slow group-hover:text-primary-600 transition-colors"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                            <!-- Smaller Gear (Counter-Clockwise) -->
+                            <svg class="w-4 h-4 text-blueprint-orange absolute -bottom-0.5 -right-0.5 animate-spin-medium-reverse"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path
+                                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                </path>
+                            </svg>
+                        </div>
+                        <span
+                            class="text-2xl font-bold tracking-tight text-slate-800 group-hover:text-primary-600 transition-colors flex items-center">
+                            AutoAssist
+                        </span>
                     </a>
                 </div>
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-6">
                     {% if user.is_authenticated %}
-                        {% if user.role == 'CUSTOMER' %}
-                            <a href="{% url 'customer_dashboard' %}" class="text-gray-600 hover:text-primary transition font-medium">Dashboard</a>
-                        {% elif user.role == 'MECHANIC' %}
-                            <a href="{% url 'mechanic_dashboard' %}" class="text-gray-600 hover:text-primary transition font-medium">Dashboard</a>
-                        {% endif %}
-                        <form method="POST" action="{% url 'logout' %}" class="inline">
-                            {% csrf_token %}
-                            <button type="submit" class="text-gray-600 hover:text-red-500 transition font-medium">Logout</button>
-                        </form>
+                    {% if user.role == 'CUSTOMER' %}
+                    <a href="{% url 'customer_dashboard' %}"
+                        class="text-slate-600 hover:text-primary-500 font-mono text-xs uppercase tracking-wider transition-all font-semibold hover:translate-x-[2px]">[
+                        DASHBOARD ]</a>
+                    {% elif user.role == 'MECHANIC' %}
+                    <a href="{% url 'mechanic_dashboard' %}"
+                        class="text-slate-600 hover:text-primary-500 font-mono text-xs uppercase tracking-wider transition-all font-semibold hover:translate-x-[2px]">[
+                        DASHBOARD ]</a>
+                    {% endif %}
+                    <form method="POST" action="{% url 'logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit"
+                            class="text-slate-600 hover:text-red-500 font-mono text-xs uppercase tracking-wider transition-colors font-semibold">
+                            [ LOGOUT ]
+                        </button>
+                    </form>
                     {% else %}
-                        <a href="{% url 'login' %}" class="text-gray-600 hover:text-primary transition font-medium">Login</a>
-                        <a href="{% url 'register' %}" class="bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg font-medium shadow-sm transition">Sign Up</a>
+                    <a href="{% url 'login' %}"
+                        class="text-slate-600 hover:text-primary-500 font-mono text-xs uppercase tracking-wider transition-colors font-semibold">
+                        [ LOGIN ]
+                    </a>
+                    <a href="{% url 'register' %}"
+                        class="relative inline-flex items-center justify-center px-4 py-2 border border-slate-300 font-mono text-xs uppercase tracking-wider font-bold rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition-all hover:shadow-sm">
+                        Register
+                    </a>
                     {% endif %}
                 </div>
             </div>
@@ -57,30 +292,56 @@
     </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow w-full">
+    <main class="flex-grow w-full z-10">
         {% if messages %}
-            <div class="max-w-7xl mx-auto px-4 mt-4">
-                {% for message in messages %}
-                    <div class="p-4 mb-4 rounded-lg shadow-sm
-                        {% if message.tags == 'error' %}bg-red-100 text-red-700
-                        {% elif message.tags == 'success' %}bg-green-100 text-green-700
-                        {% else %}bg-blue-100 text-blue-700{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+        <div class="max-w-7xl mx-auto px-4 mt-6">
+            {% for message in messages %}
+            <div class="p-4 mb-4 rounded-lg shadow-sm border font-mono text-sm relative tech-corner-brackets tech-panel overflow-hidden
+                        {% if message.tags == 'error' %}bg-red-50 text-red-700 border-red-200
+                        {% elif message.tags == 'success' %}bg-green-50 text-green-700 border-green-200
+                        {% else %}bg-blue-50 text-blue-700 border-blue-200{% endif %}">
+                <div class="corner-bottom"></div>
+                <span class="font-bold mr-1">{% if message.tags == 'error' %}[ERROR]{% elif message.tags == 'success'
+                    %}[SUCCESS]{% else %}[INFO]{% endif %}</span>
+                {{ message }}
             </div>
+            {% endfor %}
+        </div>
         {% endif %}
 
         {% block content %}
         {% endblock %}
     </main>
 
-    <footer class="bg-gray-900 text-white mt-auto py-8">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-gray-400">&copy; {{ now|date:"Y" }} AutoAssist. All rights reserved.</p>
+    <!-- Footer -->
+    <footer
+        class="bg-blueprint-charcoal text-slate-400 mt-auto py-8 border-t border-slate-800 relative overflow-hidden">
+        <div
+            class="absolute inset-0 bg-[radial-gradient(#ffffff04_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none">
+        </div>
+        <div
+            class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between relative z-10">
+            <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                <span
+                    class="font-mono text-xs text-blueprint-green font-bold uppercase tracking-wider flex items-center">
+                    <span class="w-2 h-2 rounded-full bg-blueprint-green mr-1.5 animate-pulse glow-green"></span>
+                    SYS_STATUS: READY
+                </span>
+                <span class="text-slate-800">|</span>
+                <span class="font-mono text-xs text-blueprint-orange uppercase font-bold tracking-wider">
+                    DISPATCH_NODES: ONLINE
+                </span>
+            </div>
+            <p class="text-xs text-slate-500">&copy; {{ now|date:"Y" }} AutoAssist Inc. Engineered to Spec. All rights
+                reserved.</p>
+            <div class="flex items-center space-x-4 mt-4 md:mt-0 font-mono text-[10px] text-slate-500">
+                <span>COORD_LAT: 40.7128</span>
+                <span>COORD_LON: -74.0060</span>
+            </div>
         </div>
     </footer>
 
     {% block extra_scripts %}{% endblock %}
 </body>
+
 </html>

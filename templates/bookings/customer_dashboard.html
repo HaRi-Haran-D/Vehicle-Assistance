@@ -6,86 +6,161 @@
 <style>
     #map { height: 100%; width: 100%; border-radius: 0.75rem; }
     .leaflet-container { z-index: 1; }
+
+    /* Custom form styling */
+    input[type="text"], input[type="password"], input[type="email"], select, textarea {
+        font-family: 'JetBrains Mono', monospace !important;
+        font-size: 0.875rem !important;
+        background-color: rgba(248, 250, 252, 0.8) !important;
+        border: 1px solid rgba(148, 163, 184, 0.4) !important;
+        border-radius: 0.5rem !important;
+        color: #0f172a !important;
+        padding: 0.625rem 0.875rem !important;
+        transition: all 0.2s ease !important;
+    }
+    input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, select:focus, textarea:focus {
+        border-color: #2563eb !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+        background-color: #ffffff !important;
+        outline: none !important;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 py-8">
-    <div class="flex items-center justify-between mb-8">
-        <h2 class="text-3xl font-bold text-gray-900">Hello, {{ user.username }}</h2>
-        <a href="{% url 'work_records' %}" class="inline-flex items-center px-4 py-2 bg-indigo-50 border border-indigo-100 rounded-lg text-indigo-700 hover:bg-indigo-100 transition font-medium text-sm">
-            <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Service History
-        </a>
+<div class="max-w-7xl mx-auto px-4 py-8 relative">
+    
+    <!-- Header panel with blueprint stats -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 pb-4 border-b border-slate-200">
+        <div>
+            <span class="font-mono text-[10px] text-primary-600 font-bold uppercase tracking-wider block">[ CUSTOMER_CONSOLE ]</span>
+            <h2 class="text-3xl font-extrabold text-slate-800">Hello, {{ user.username }}</h2>
+        </div>
+        <div class="mt-4 sm:mt-0">
+            <a href="{% url 'work_records' %}" class="group relative inline-flex items-center px-4 py-2.5 border border-slate-300 rounded-xl bg-white hover:bg-slate-50 transition font-mono text-xs uppercase tracking-wider font-bold text-slate-700 shadow-sm">
+                <svg class="w-4 h-4 mr-2 text-slate-400 group-hover:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>[ Service History ]</span>
+            </a>
+        </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <!-- Main Panel -->
-        <div class="bg-white rounded-xl shadow-md p-6 border border-gray-100">
-            {% if active_request %}
-            <div class="text-center p-6 border-2 border-primary rounded-lg bg-blue-50">
-                <h3 class="text-xl font-bold text-gray-800 mb-2">Request Status: <span id="status-badge" class="text-primary">{{ active_request.get_status_display }}</span></h3>
-                <p class="text-gray-600 mb-4">{{ active_request.issue_type }} - {{ active_request.description }}</p>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Main Panel: Request Board -->
+        <div class="lg:col-span-6 space-y-6">
+            
+            <div class="tech-panel tech-corner-brackets rounded-2xl p-6 border border-slate-300 bg-white/90 shadow-md">
+                <div class="corner-bottom"></div>
 
-                {% if active_request.mechanic %}
-                <div class="bg-white p-4 rounded-md shadow-sm text-left">
-                    <h4 class="font-semibold text-gray-700">Assigned Mechanic:</h4>
-                    <p class="text-gray-900 font-bold text-lg">{{ active_request.mechanic.username }}</p>
-                    <p class="text-sm text-gray-500">Rating: {{ active_request.mechanic.mechanic_profile.rating }} / 5.0</p>
-                    <p class="text-sm text-gray-500">Phone: {{ active_request.mechanic.phone }}</p>
+                {% if active_request %}
+                <div class="text-center p-6 border border-primary-300 rounded-xl bg-primary-50/50 relative overflow-hidden">
+                    
+                    <!-- Spinning gear decorative accents behind alert -->
+                    <div class="absolute right-[-10px] top-[-10px] w-20 h-20 text-primary-100 pointer-events-none z-0">
+                        <svg class="w-full h-full animate-spin-slow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </div>
+
+                    <div class="relative z-10">
+                        <span class="font-mono text-[9px] text-primary-600 font-bold uppercase tracking-wider block mb-1">[ DISPATCH_ACTIVE ]</span>
+                        <h3 class="text-lg font-extrabold text-slate-800 mb-2">Request Status: <span id="status-badge" class="text-primary-600 font-mono">{{ active_request.get_status_display }}</span></h3>
+                        <p class="text-sm text-slate-600 mb-6 font-mono bg-white/60 p-2 rounded border border-slate-200/50 inline-block">{{ active_request.issue_type }} - {{ active_request.description }}</p>
+
+                        {% if active_request.mechanic %}
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm text-left relative tech-corner-brackets">
+                            <div class="corner-bottom"></div>
+                            <span class="font-mono text-[9px] text-blueprint-orange font-bold uppercase tracking-wider block mb-2">[ ASSIGNED_RESPONDER ]</span>
+                            <h4 class="text-lg font-bold text-slate-800 mb-1">{{ active_request.mechanic.username }}</h4>
+                            
+                            <div class="grid grid-cols-2 gap-4 mt-3 font-mono text-xs text-slate-500">
+                                <div>RATING: <span class="text-slate-800 font-bold">{{ active_request.mechanic.mechanic_profile.rating }} / 5.0</span></div>
+                                <div>PHONE: <span class="text-slate-800 font-bold">{{ active_request.mechanic.phone }}</span></div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="flex flex-col items-center justify-center space-y-3 mt-4 text-slate-500 bg-white/60 p-4 rounded-xl border border-slate-200 border-dashed">
+                            <!-- Dual spinning gears representing search -->
+                            <div class="relative w-8 h-8 flex items-center justify-center">
+                                <svg class="w-6 h-6 text-primary-500 animate-spin-medium" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            </div>
+                            <span class="font-mono text-xs tracking-wider animate-pulse">SEARCHING NEAREST DISPATCH UNIT...</span>
+                        </div>
+                        {% endif %}
+                    </div>
                 </div>
                 {% else %}
-                <div class="animate-pulse flex items-center justify-center space-x-2 mt-4 text-gray-500">
-                    <svg class="w-5 h-5 animate-spin text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                    <span>Finding a nearby mechanic...</span>
+                <div>
+                    <div class="mb-4">
+                        <span class="font-mono text-[10px] text-primary-600 font-bold uppercase tracking-wider block mb-1">[ DISPATCH_CONTROL_INTERFACE ]</span>
+                        <h3 class="text-xl font-extrabold text-slate-800">Request Assistance</h3>
+                    </div>
+                    
+                    <p id="location-status" class="font-mono text-xs text-blueprint-orange mb-4 bg-orange-50 p-2.5 rounded-lg border border-orange-100 flex items-center">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blueprint-orange mr-2 animate-ping"></span>
+                        ACQUIRING COORD_GEOLOCATION...
+                    </p>
+
+                    <form method="POST" enctype="multipart/form-data" class="space-y-5 relative" id="request-form">
+                        {% csrf_token %}
+                        {{ form.user_latitude }}
+                        {{ form.user_longitude }}
+
+                        <div id="form-overlay" class="absolute inset-0 bg-white/80 z-20 hidden items-center justify-center rounded-xl">
+                            <div class="text-center font-mono text-xs text-slate-500">
+                                <svg class="animate-spin h-6 w-6 text-primary-500 mx-auto mb-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                WAITING_FOR_COORD_LOCK...
+                            </div>
+                        </div>
+
+                        {% for field in form %}
+                        {% if not field.is_hidden %}
+                        <div>
+                            <label class="block text-xs font-mono font-bold text-slate-500 uppercase tracking-wide mb-1 flex justify-between">
+                                <span>{{ field.label }}</span>
+                                {% if field.field.required %}<span class="text-blueprint-orange text-[9px]">[REQ]</span>{% endif %}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}<p class="text-red-500 font-mono text-[10px] mt-1">{{ field.errors.0 }}</p>{% endif %}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+
+                        <button type="submit" id="submit-btn" disabled class="w-full flex flex-col items-center justify-center py-3.5 px-4 border border-transparent rounded-xl text-white bg-slate-300 cursor-not-allowed transition font-mono uppercase tracking-wider font-bold shadow-md">
+                            <span class="text-[9px] opacity-75 font-normal">[ CMD: SUBMIT_DISPATCH_REQ ]</span>
+                            <span>Transmit Request</span>
+                        </button>
+                    </form>
                 </div>
                 {% endif %}
             </div>
-            {% else %}
-            <h3 class="text-xl font-semibold mb-4">Request Assistance</h3>
-            <p id="location-status" class="text-sm text-yellow-600 mb-4 bg-yellow-50 p-2 rounded">Fetching your location...</p>
-
-            <form method="POST" enctype="multipart/form-data" class="space-y-4 relative" id="request-form">
-                {% csrf_token %}
-                {{ form.user_latitude }}
-                {{ form.user_longitude }}
-
-                <div id="form-overlay" class="absolute inset-0 bg-white/60 z-10 hidden items-center justify-center">
-                    <span class="text-gray-600 font-medium">Please wait for location...</span>
-                </div>
-
-                {% for field in form %}
-                {% if not field.is_hidden %}
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}<p class="text-red-500 text-xs italic mt-1">{{ field.errors.0 }}</p>{% endif %}
-                </div>
-                {% endif %}
-                {% endfor %}
-
-                <button type="submit" id="submit-btn" disabled class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-400 cursor-not-allowed transition">Submit Request</button>
-            </form>
-            {% endif %}
         </div>
 
-        <!-- Sidebar (Map) -->
-        <div class="space-y-6">
-            <div class="bg-white rounded-xl shadow-md p-2 border border-gray-100 h-[32rem] flex items-center justify-center bg-gray-50 relative overflow-hidden">
-                <div id="map" class="z-0"></div>
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10" id="map-fallback">
-                    <div class="text-center bg-white/80 p-4 rounded-xl backdrop-blur-sm shadow-sm border border-white">
-                        <svg class="w-10 h-10 mx-auto text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        <!-- Sidebar: Radar Map -->
+        <div class="lg:col-span-6 space-y-6">
+            <div class="tech-panel tech-corner-brackets rounded-2xl p-2 border border-slate-300 bg-white/95 h-[34rem] relative overflow-hidden shadow-md">
+                <div class="corner-bottom"></div>
+                
+                <!-- Map Container -->
+                <div id="map" class="z-0 h-full w-full"></div>
+                
+                <!-- Map fallback overlay styled as a diagnostic radar -->
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-10 transition-opacity duration-300" id="map-fallback">
+                    <div class="text-center bg-white/90 p-6 rounded-xl border border-slate-300 shadow-lg backdrop-blur-sm max-w-[280px]">
+                        <svg class="w-12 h-12 mx-auto text-slate-400 mb-3 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                        <p class="text-gray-500 font-medium">{% if active_request %}Initializing tracking...{% else %}Ready for your request{% endif %}</p>
+                        <p class="font-mono text-xs text-slate-700 uppercase tracking-wide font-bold mb-1">Radar Diagnostics</p>
+                        <p class="font-mono text-[10px] text-slate-500">{% if active_request %}ACQUIRING DISPATCH POSITION LINK...{% else %}STANDBY FOR DISPATCH REQUEST...{% endif %}</p>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 {% endblock %}
@@ -105,7 +180,7 @@
         let mechanicMarker;
 
         function initMap(lat, lon, label = 'Your Location', isMechanic = false) {
-            if (mapFallback) mapFallback.classList.add('hidden');
+            if (mapFallback) mapFallback.classList.add('opacity-0', 'pointer-events-none');
             if (!map) {
                 map = L.map('map').setView([lat, lon], 15);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -172,24 +247,34 @@
                     latInput.value = lat;
                     lonInput.value = lon;
                     if (statusText) {
-                        statusText.className = "text-sm text-green-600 mb-4 bg-green-50 p-2 rounded";
-                        statusText.innerText = "Location acquired successfully!";
+                        statusText.className = "font-mono text-xs text-blueprint-green mb-4 bg-green-50 p-2.5 rounded-lg border border-green-150 flex items-center";
+                        statusText.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-blueprint-green mr-2 glow-green animate-pulse"></span> COORD_GEOLOCATION LOCK ACQUIRED! [LAT: ${lat.toFixed(4)}, LON: ${lon.toFixed(4)}]`;
                     }
                     if (submitBtn) {
                         submitBtn.disabled = false;
-                        submitBtn.className = "w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-secondary transition";
+                        submitBtn.className = "group relative w-full flex flex-col items-center justify-center py-3.5 px-4 border border-transparent rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition shadow-lg shadow-primary-100 overflow-hidden";
+                        submitBtn.innerHTML = `
+                            <span class="relative z-10 font-mono text-[9px] opacity-75 font-normal">[ CMD: SUBMIT_DISPATCH_REQ ]</span>
+                            <span class="relative z-10 font-mono text-sm uppercase tracking-wider font-bold">Transmit Request</span>
+                            <span class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                        `;
                     }
                     initMap(lat, lon);
                 }, () => {
                     if (statusText) {
-                        statusText.className = "text-sm text-red-600 mb-4 bg-red-50 p-2 rounded";
-                        statusText.innerText = "Error getting location. Using fallback.";
+                        statusText.className = "font-mono text-xs text-red-600 mb-4 bg-red-50 p-2.5 rounded-lg border border-red-150 flex items-center";
+                        statusText.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-500 mr-2"></span> GPS LOCK FAILED. USING SYSTEM COORD DEFAULTS.`;
                     }
                     const fLat = 40.7128, fLon = -74.0060;
                     latInput.value = fLat; lonInput.value = fLon;
                     if (submitBtn) {
                         submitBtn.disabled = false;
-                        submitBtn.className = "w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-secondary transition";
+                        submitBtn.className = "group relative w-full flex flex-col items-center justify-center py-3.5 px-4 border border-transparent rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition shadow-lg shadow-primary-100 overflow-hidden";
+                        submitBtn.innerHTML = `
+                            <span class="relative z-10 font-mono text-[9px] opacity-75 font-normal">[ CMD: SUBMIT_DISPATCH_REQ ]</span>
+                            <span class="relative z-10 font-mono text-sm uppercase tracking-wider font-bold">Transmit Request</span>
+                            <span class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                        `;
                     }
                     initMap(fLat, fLon);
                 });

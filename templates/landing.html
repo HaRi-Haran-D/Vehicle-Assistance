@@ -1,32 +1,212 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="relative bg-white overflow-hidden">
-    <div class="max-w-7xl mx-auto">
-        <div class="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32 mt-16">
-            <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
-                <div class="sm:text-center lg:text-left">
-                    <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                        <span class="block xl:inline">Vehicle broke down?</span>
-                        <span class="block text-primary">Get help on demand.</span>
-                    </h1>
-                    <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                        Connect with nearby mechanics instantly. Whether you have a flat tire, engine trouble, or need a quick fix, our network of trusted mechanics is ready to get you back on the road.
-                    </p>
-                    <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                        <div class="rounded-md shadow">
-                            <a href="{% url 'register' %}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary hover:bg-secondary md:py-4 md:text-lg md:px-10 transition">
-                                Request a Mechanic
-                            </a>
-                        </div>
-                        <div class="mt-3 sm:mt-0 sm:ml-3">
-                            <a href="{% url 'register' %}?role=mechanic" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary bg-blue-100 hover:bg-blue-200 md:py-4 md:text-lg md:px-10 transition">
-                                Become a Mechanic
-                            </a>
-                        </div>
-                    </div>
+<div class="relative overflow-hidden min-h-[calc(100vh-10rem)] flex items-center">
+    <!-- Overlay blueprint line decorations -->
+    <div class="absolute left-[10%] top-0 bottom-0 w-px tech-line-v opacity-25"></div>
+    <div class="absolute left-[15%] top-0 bottom-0 w-px tech-line-v opacity-10"></div>
+    <div class="absolute left-0 right-0 top-[30%] h-px tech-line-h opacity-20"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10 w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+
+            <!-- Left Info Panel: Telemetry & Commands -->
+            <div class="lg:col-span-6 space-y-6 text-left">
+                <!-- Muted pre-header -->
+                <!-- <div
+                    class="inline-flex items-center space-x-2 font-mono text-xs font-bold text-primary-600 bg-primary-50 px-3 py-1 rounded-full border border-primary-200">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary-500 animate-ping"></span>
+                    <span>DISPATCH_SYSTEM_READY [SYS_V2.0]</span>
+                </div> -->
+
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-green-800 tracking-tight leading-none">
+                    <span class="block text-slate-800 font-sans">Vehicle broke down?</span>
+                    <span class="block text-primary-600 mt-2 font-sans relative">
+                        Get help on demand.
+                        <span class="absolute bottom-[-6px] left-0 w-24 h-1 bg-blueprint-orange rounded"></span>
+                    </span>
+                </h1>
+
+                <p class="text-base sm:text-lg text-slate-600 font-sans max-w-xl leading-relaxed">
+                    Connect with nearby certified mechanics instantly. Whether you have a flat tire, battery discharge,
+                    engine malfunction, or require immediate towing, our real-time telemetry dispatch network gets you
+                    back on the road.
+                </p>
+
+                <!-- Technical Command Actions -->
+                <div
+                    class="flex flex-col sm:flex-row items-stretch sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-4">
+                    <!-- CTA: Request assistance -->
+                    <a href="{% url 'register' %}"
+                        class="group relative flex items-center justify-between px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white font-mono text-sm uppercase tracking-wider font-bold rounded-xl shadow-lg shadow-primary-200 transition-all hover:-translate-y-0.5 overflow-hidden">
+                        <span class="relative z-10 mr-4 flex flex-col items-start">
+                            <!-- <span class="text-[9px] opacity-75 font-normal">[ CMD: INITIATE_DISPATCH ]</span> -->
+                            <span>Request assistance</span>
+                        </span>
+                        <svg class="w-5 h-5 transition-transform group-hover:translate-x-1 relative z-10" fill="none"
+                            stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        <span
+                            class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                    </a>
+
+                    <!-- CTA: Become a Mechanic -->
+                    <a href="{% url 'register' %}?role=mechanic"
+                        class="group flex items-center justify-between px-6 py-4 border-2 border-slate-300 hover:border-primary-500 font-mono text-sm uppercase tracking-wider font-bold rounded-xl bg-white/50 backdrop-blur text-slate-700 hover:text-primary-600 transition-all hover:-translate-y-0.5">
+                        <span class="flex flex-col items-start mr-4">
+                            <!-- <span class="text-[9px] text-slate-400 font-normal">[ CMD: JOIN_CORPS ]</span> -->
+                            <span>Become a Mechanic</span>
+                        </span>
+                        <svg class="w-5 h-5 text-slate-400 group-hover:text-primary-500 transition-colors" fill="none"
+                            stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                    </a>
                 </div>
-            </main>
+            </div>
+
+            <!-- Right Interactive Blueprint Canvas -->
+            <div class="lg:col-span-6 relative flex items-center justify-center min-h-[350px] sm:min-h-[450px]">
+
+                <!-- Main Blueprint Panel Base -->
+                <div
+                    class="w-full max-w-[480px] h-[360px] sm:h-[400px] rounded-2xl tech-panel tech-corner-brackets p-6 overflow-hidden border border-slate-300 bg-white/70">
+                    <div class="corner-bottom"></div>
+
+                    <!-- Schematic Circle & Radar rings -->
+                    <div
+                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 border border-slate-200/50 rounded-full pointer-events-none">
+                    </div>
+                    <div
+                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border border-dashed border-slate-200/80 rounded-full pointer-events-none">
+                    </div>
+                    <div
+                        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-slate-200/40 rounded-full pointer-events-none">
+                    </div>
+
+                    <!-- Schematic Lines and Nodes (Matching the theme image) -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Horizontal Bus Line -->
+                        <line x1="20" y1="180" x2="460" y2="180" stroke="#cbd5e1" stroke-width="1.5"
+                            stroke-dasharray="4 6" />
+                        <!-- Diagonal paths -->
+                        <path d="M50,180 L100,240 L160,240" fill="none" stroke="#cbd5e1" stroke-width="1.5" />
+                        <path d="M420,180 L370,120 L300,120" fill="none" stroke="#cbd5e1" stroke-width="1.5" />
+
+                        <!-- Coloured Nodes -->
+                        <circle cx="100" cy="240" r="4" fill="#22c55e" /> <!-- Green dot -->
+                        <circle cx="200" cy="140" r="5" fill="#f97316" /> <!-- Orange dot -->
+                        <circle cx="340" cy="230" r="4.5" fill="#3b82f6" /> <!-- Blue dot -->
+                        <circle cx="370" cy="120" r="4" fill="#b45309" /> <!-- Bronze dot -->
+                    </svg>
+
+                    <!-- Interactive Spinning Gears Containers -->
+                    <!-- Large Primary Gear (Bottom-Left) -->
+                    <div
+                        class="absolute bottom-4 left-4 w-48 h-48 text-slate-800/95 transition-transform hover:scale-105 duration-500 cursor-pointer">
+                        <svg class="w-full h-full animate-spin-slow hover:animate-spin-fast drop-shadow-md"
+                            viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <!-- Inner details -->
+                            <circle cx="50" cy="50" r="14" fill="#f8fafc" stroke="currentColor" stroke-width="1.5" />
+                            <circle cx="50" cy="50" r="8" fill="none" stroke="currentColor" stroke-width="1" />
+                            <circle cx="50" cy="50" r="28" stroke="currentColor" stroke-dasharray="1.5 3" />
+                            <!-- Outer gear body and teeth -->
+                            <circle cx="50" cy="50" r="38" stroke="currentColor" stroke-width="2" />
+                            <g stroke="currentColor" stroke-width="3">
+                                <line x1="50" y1="6" x2="50" y2="14" />
+                                <line x1="50" y1="86" x2="50" y2="94" />
+                                <line x1="6" y1="50" x2="14" y2="50" />
+                                <line x1="86" y1="50" x2="94" y2="50" />
+                                <line x1="19" y1="19" x2="25" y2="25" />
+                                <line x1="75" y1="75" x2="81" y2="81" />
+                                <line x1="81" y1="19" x2="75" y2="25" />
+                                <line x1="25" y1="75" x2="19" y2="81" />
+                                <!-- Extra teeth for high detail density -->
+                                <line x1="32" y1="9" x2="36" y2="16" />
+                                <line x1="68" y1="91" x2="64" y2="84" />
+                                <line x1="9" y1="32" x2="16" y2="36" />
+                                <line x1="91" y1="68" x2="84" y2="64" />
+                                <line x1="68" y1="9" x2="64" y2="16" />
+                                <line x1="32" y1="91" x2="36" y2="84" />
+                                <line x1="9" y1="68" x2="16" y2="64" />
+                                <line x1="91" y1="32" x2="84" y2="36" />
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Medium Intermeshed Gear (Center-Top-Right) -->
+                    <div
+                        class="absolute top-10 right-14 w-32 h-32 text-slate-700/80 transition-transform hover:scale-105 duration-500 cursor-pointer">
+                        <svg class="w-full h-full animate-spin-medium-reverse hover:animate-spin-fast-reverse drop-shadow-sm"
+                            viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="50" cy="50" r="10" fill="#f8fafc" stroke="currentColor" stroke-width="1.5" />
+                            <circle cx="50" cy="50" r="24" stroke="currentColor" stroke-width="1" />
+                            <circle cx="50" cy="50" r="36" stroke="currentColor" stroke-width="1.5" />
+                            <g stroke="currentColor" stroke-width="2.5">
+                                <line x1="50" y1="10" x2="50" y2="16" />
+                                <line x1="50" y1="84" x2="50" y2="90" />
+                                <line x1="10" y1="50" x2="16" y2="50" />
+                                <line x1="84" y1="50" x2="90" y2="50" />
+                                <line x1="22" y1="22" x2="26" y2="26" />
+                                <line x1="74" y1="74" x2="78" y2="78" />
+                                <line x1="78" y1="22" x2="74" y2="26" />
+                                <line x1="26" y1="74" x2="22" y2="78" />
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Small Colored Offset Gear (Bronze - Bottom-Center-Right) -->
+                    <div
+                        class="absolute bottom-8 right-24 w-20 h-20 text-blueprint-bronze transition-transform hover:scale-110 duration-500 cursor-pointer">
+                        <svg class="w-full h-full animate-spin-medium hover:animate-spin-fast" viewBox="0 0 100 100"
+                            fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="50" cy="50" r="6" fill="#f8fafc" stroke="currentColor" />
+                            <circle cx="50" cy="50" r="32" stroke="currentColor" stroke-width="1.5" />
+                            <g stroke="currentColor" stroke-width="2">
+                                <line x1="50" y1="14" x2="50" y2="20" />
+                                <line x1="50" y1="80" x2="50" y2="86" />
+                                <line x1="14" y1="50" x2="20" y2="50" />
+                                <line x1="80" y1="50" x2="86" y2="50" />
+                                <line x1="24" y1="24" x2="29" y2="29" />
+                                <line x1="76" y1="76" x2="71" y2="71" />
+                                <line x1="76" y1="24" x2="71" y2="29" />
+                                <line x1="24" y1="76" x2="29" y2="79" />
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Small Colored Offset Gear (Charcoal - Bottom-Right) -->
+                    <div
+                        class="absolute bottom-16 right-4 w-16 h-16 text-blueprint-slate transition-transform hover:scale-110 duration-500 cursor-pointer">
+                        <svg class="w-full h-full animate-spin-fast-reverse hover:animate-spin-fast"
+                            viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="50" cy="50" r="5" fill="#f8fafc" stroke="currentColor" />
+                            <circle cx="50" cy="50" r="30" stroke="currentColor" stroke-width="1" />
+                            <g stroke="currentColor" stroke-width="2">
+                                <line x1="50" y1="16" x2="50" y2="22" />
+                                <line x1="50" y1="78" x2="50" y2="84" />
+                                <line x1="16" y1="50" x2="22" y2="50" />
+                                <line x1="78" y1="50" x2="84" y2="50" />
+                            </g>
+                        </svg>
+                    </div>
+
+                </div>
+
+                <!-- Floating Accent Labels (Matching style details) -->
+                <div
+                    class="absolute top-10 left-6 bg-slate-900 text-white font-mono text-[9px] px-2 py-0.5 rounded shadow-sm border border-slate-700 select-none">
+                    ENGINE_GRID: ACTIVE
+                </div>
+                <div
+                    class="absolute bottom-4 right-10 bg-blueprint-orange text-white font-mono text-[9px] px-2 py-0.5 rounded shadow-sm select-none animate-pulse-slow">
+                    GPS_SYNC: OK
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
