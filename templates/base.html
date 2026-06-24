@@ -20,22 +20,59 @@
                     },
                     colors: {
                         primary: {
-                            DEFAULT: '#2563eb',
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
+                            DEFAULT: '#233D4D',
+                            50: '#f1f5f7',
+                            100: '#e2ebf0',
+                            200: '#c5d7e1',
+                            300: '#a8c3d2',
+                            400: '#6e9ab5',
+                            500: '#467390',
+                            600: '#233D4D',
+                            700: '#1b303d',
+                            800: '#14242e',
+                            900: '#0d171e',
+                        },
+                        blue: {
+                            50: '#f1f5f7',
+                            100: '#e2ebf0',
+                            200: '#c5d7e1',
+                            300: '#a8c3d2',
+                            400: '#6e9ab5',
+                            500: '#467390',
+                            600: '#233D4D',
+                            700: '#1b303d',
+                            800: '#14242e',
+                            900: '#0d171e',
+                        },
+                        orange: {
+                            50: '#fff3eb',
+                            100: '#ffe4d1',
+                            150: '#ffd0b0',
+                            200: '#ffbc8f',
+                            300: '#ff9a5c',
+                            400: '#ff7c33',
+                            500: '#FE7F2D',
+                            600: '#e0661b',
+                            700: '#b84e10',
+                            800: '#913b0a',
+                            900: '#752d06',
+                        },
+                        indigo: {
+                            50: '#f1f5f7',
+                            100: '#e2ebf0',
+                            200: '#c5d7e1',
+                            300: '#a8c3d2',
+                            400: '#6e9ab5',
+                            500: '#467390',
+                            600: '#233D4D',
+                            700: '#1b303d',
+                            800: '#14242e',
+                            900: '#0d171e',
                         },
                         blueprint: {
                             bg: '#f8fafc',
                             grid: '#cbd5e1',
-                            orange: '#f97316',
+                            orange: '#FE7F2D',
                             green: '#22c55e',
                             bronze: '#b45309',
                             slate: '#1e293b',
@@ -321,23 +358,8 @@
         </div>
         <div
             class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between relative z-10">
-            <div class="flex items-center space-x-3 mb-4 md:mb-0">
-                <span
-                    class="font-mono text-xs text-blueprint-green font-bold uppercase tracking-wider flex items-center">
-                    <span class="w-2 h-2 rounded-full bg-blueprint-green mr-1.5 animate-pulse glow-green"></span>
-                    SYS_STATUS: READY
-                </span>
-                <span class="text-slate-800">|</span>
-                <span class="font-mono text-xs text-blueprint-orange uppercase font-bold tracking-wider">
-                    DISPATCH_NODES: ONLINE
-                </span>
-            </div>
             <p class="text-xs text-slate-500">&copy; {{ now|date:"Y" }} AutoAssist Inc. Engineered to Spec. All rights
                 reserved.</p>
-            <div class="flex items-center space-x-4 mt-4 md:mt-0 font-mono text-[10px] text-slate-500">
-                <span>COORD_LAT: 40.7128</span>
-                <span>COORD_LON: -74.0060</span>
-            </div>
         </div>
     </footer>
 
