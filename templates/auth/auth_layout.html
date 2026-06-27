@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Vehicle Assistance Auth{% endblock %}</title>
+
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style type="text/tailwindcss">
+        @theme {
+            --font-sans: 'Poppins', sans-serif;
+            --color-customer-primary: #2563EB;
+            --color-customer-accent: #60A5FA;
+            --color-customer-bg: #F8FAFC;
+            --color-mechanic-primary: #111827;
+            --color-mechanic-accent: #F59E0B;
+            --color-mechanic-bg: #0F172A;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .auth-wrapper {
+            @apply min-h-screen flex items-center justify-center w-full;
+        }
+
+        /* Theming */
+        .theme-customer {
+            @apply bg-customer-bg text-slate-800;
+        }
+        .theme-customer .text-primary-custom {
+            @apply text-customer-bg;
+        }
+        .theme-customer .bg-primary-custom {
+            @apply bg-customer-primary text-white;
+        }
+        .theme-customer .btn-primary-custom {
+            @apply bg-customer-primary text-white hover:bg-blue-700 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 rounded-xl px-6 py-3 font-semibold flex items-center justify-center gap-2 w-full;
+        }
+        .theme-customer .form-control {
+            @apply w-full rounded-xl px-4 pt-6 pb-2 border border-slate-300 bg-slate-50 focus:bg-white focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-customer-primary transition-all;
+        }
+
+        .theme-mechanic {
+            @apply bg-mechanic-bg text-slate-50;
+        }
+        .theme-mechanic .text-primary-custom {
+            @apply text-mechanic-accent;
+        }
+        .theme-mechanic .bg-primary-custom {
+            @apply bg-mechanic-primary text-white;
+        }
+        .theme-mechanic .btn-primary-custom {
+            @apply bg-mechanic-accent text-slate-900 hover:bg-amber-600 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 rounded-xl px-6 py-3 font-bold flex items-center justify-center gap-2 w-full;
+        }
+        .theme-mechanic .form-control {
+            @apply w-full rounded-xl px-4 pt-6 pb-2 border border-slate-700 bg-slate-900 text-white focus:outline-none focus:ring-4 focus:ring-amber-500/10 focus:border-mechanic-accent transition-all;
+        }
+
+        /* Glassmorphism Auth Card */
+        .auth-card {
+            @apply bg-white/85 backdrop-blur-md border border-white/20 rounded-3xl shadow-2xl overflow-hidden transition-all p-8 md:p-12;
+        }
+        .theme-mechanic .auth-card {
+            @apply bg-slate-800/85 border-white/5 shadow-black/50;
+        }
+
+        /* Form Floating Labels */
+        .form-floating {
+            @apply relative w-full mb-6;
+        }
+        .form-floating label {
+            @apply absolute left-4 top-4 text-slate-500 transition-all pointer-events-none text-sm;
+        }
+        .theme-mechanic .form-floating label {
+            @apply text-slate-400;
+        }
+        .form-floating input:focus + label,
+        .form-floating input:not(:placeholder-shown) + label {
+            @apply text-xs top-1.5;
+        }
+        .theme-customer .form-floating input:focus + label {
+            @apply text-customer-primary;
+        }
+        .theme-mechanic .form-floating input:focus + label {
+            @apply text-mechanic-accent;
+        }
+
+        /* Password Toggle */
+        .password-toggle {
+            @apply absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-slate-500 z-10;
+        }
+
+        /* Animations */
+        .fade-in { animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .floating-img { animation: float 6s ease-in-out infinite; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .divider {
+            @apply flex items-center text-center text-slate-400 my-6;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            @apply flex-1 border-b border-slate-200 mx-4;
+        }
+        .theme-mechanic .divider::before, .theme-mechanic .divider::after {
+            @apply border-slate-700;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}{% endblock %}">
+
+    <div class="auth-wrapper fade-in relative">
+
+        <!-- Auth Navbar -->
+        <div class="absolute top-0 left-0 right-0 p-8 flex justify-between items-center z-50">
+            <a href="{% url 'home' %}"
+                class="no-underline text-primary-custom text-2xl font-bold flex items-center gap-2">
+                <i class="fas fa-car-crash"></i> Vehicle Assist
+            </a>
+            {% block role_switcher %}{% endblock %}
+        </div>
+
+        {% block content %}{% endblock %}
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Loading Button Logic
+            const forms = document.querySelectorAll('.auth-form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function () {
+                    const btn = this.querySelector('button[type="submit"]');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+                        btn.style.opacity = '0.8';
+                    }
+                });
+            });
+
+            // Password Toggle Logic
+            const togglePasswords = document.querySelectorAll('.password-toggle');
+            togglePasswords.forEach(toggle => {
+                toggle.addEventListener('click', function () {
+                    const input = this.previousElementSibling;
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.classList.remove('fa-eye');
+                        this.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        this.classList.remove('fa-eye-slash');
+                        this.classList.add('fa-eye');
+                    }
+                });
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

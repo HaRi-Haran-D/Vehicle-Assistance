@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}403 Forbidden - Vehicle Assist{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-center min-vh-75">
+    <div class="text-center p-5 bg-white rounded shadow-sm border border-danger">
+        <i class="fas fa-ban fa-5x text-danger mb-4"></i>
+        <h1 class="display-4 fw-bold text-dark">403 Forbidden</h1>
+        <p class="lead text-muted">{{ message|default:"You don't have permission to access this page." }}</p>
+        <div class="mt-4">
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary me-2"><i class="fas fa-home"></i> Back to Home</a>
+            <form method="post" action="{% url 'logout' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

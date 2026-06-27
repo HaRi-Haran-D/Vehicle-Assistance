@@ -1,0 +1,21 @@
+{% if messages %}
+    <div class="mt-4">
+        {% for message in messages %}
+            <div class="relative p-4 mb-4 rounded-xl text-sm border shadow-sm
+                {% if message.tags == 'success' %}bg-green-50 text-green-800 border-green-200
+                {% elif message.tags == 'error' or message.tags == 'danger' %}bg-red-50 text-red-800 border-red-200
+                {% elif message.tags == 'warning' %}bg-yellow-50 text-yellow-800 border-yellow-200
+                {% else %}bg-blue-50 text-blue-800 border-blue-200{% endif %}" role="alert">
+                <i class="fas fa-info-circle mr-2"></i> {{ message }}
+                <button type="button" class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 focus:outline-none" onclick="this.parentElement.style.display='none';" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% if form.non_field_errors %}
+    <div class="mt-4 p-4 rounded-xl text-sm bg-red-50 text-red-800 border border-red-200 shadow-sm" role="alert">
+        <i class="fas fa-exclamation-triangle mr-2"></i> {{ form.non_field_errors.0 }}
+    </div>
+{% endif %}

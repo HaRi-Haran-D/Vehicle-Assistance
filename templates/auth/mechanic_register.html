@@ -1,0 +1,124 @@
+{% extends 'auth/auth_layout.html' %}
+{% block title %}Mechanic Register - Vehicle Assist{% endblock %}
+{% block body_class %}theme-mechanic{% endblock %}
+
+{% block role_switcher %}
+{% include 'components/auth/role_switcher_register.html' with is_customer=False %}
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col lg:flex-row w-full min-h-screen m-0">
+    <!-- Left Split (Illustration) -->
+    <div class="hidden lg:flex w-4/12 bg-primary-custom text-white relative flex-col justify-center p-12 overflow-hidden"
+        style="background: linear-gradient(135deg, #111827 0%, #1f2937 100%);">
+
+        <div class="absolute opacity-10 top-[25%] left-[15%] w-[200px] h-[200px] border-[20px] border-amber-500 rounded-3xl rotate-45"></div>
+        <div class="absolute opacity-10 bottom-[15%] -right-[10%] w-[150px] h-[150px] bg-amber-500 rounded-full"></div>
+
+        <div class="z-10 text-center mt-20">
+            <div class="floating-img mb-12 relative inline-block">
+                <i class="fas fa-hard-hat text-7xl text-slate-400 drop-shadow-lg"></i>
+                <i class="fas fa-certificate text-3xl text-amber-500 absolute -top-4 -right-4 drop-shadow-md"></i>
+            </div>
+            <h1 class="text-4xl lg:text-5xl font-bold mb-6 leading-tight">Partner With Us</h1>
+            <p class="text-lg opacity-80 max-w-sm mx-auto">Grow your business by providing on-demand assistance to stranded drivers.</p>
+        </div>
+    </div>
+
+    <!-- Right Split (Form) -->
+    <div class="w-full lg:w-8/12 relative flex flex-col justify-center p-8 lg:p-12 min-h-screen">
+        <div class="absolute inset-0 opacity-10 -z-10"
+            style="background-image: linear-gradient(#334155 1px, transparent 1px), linear-gradient(90deg, #334155 1px, transparent 1px); background-size: 40px 40px;">
+        </div>
+
+        <div class="w-full max-w-3xl mx-auto mt-20 lg:mt-0">
+            <div class="auth-card">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">Create Mechanic Account</h2>
+                    <p class="text-slate-400">Fill in your professional details</p>
+                </div>
+
+                {% include 'components/auth/alert_message.html' %}
+
+                <form method="POST" enctype="multipart/form-data" class="auth-form mt-8">
+                    {% csrf_token %}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {% for field in form %}
+                        {% if field.name == 'terms' %}
+                        <div class="col-span-1 md:col-span-2 mb-4 px-2">
+                            <div class="flex items-center gap-2">
+                                {{ field }}
+                                <label for="{{ field.id_for_label }}"
+                                    class="text-slate-400 text-sm cursor-pointer">
+                                    I accept the <a href="#" class="text-amber-500 font-semibold hover:underline">Terms and Conditions</a>
+                                    {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                                </label>
+                            </div>
+                            {% if field.errors %}
+                                <div class="text-red-500 text-sm mt-1">{{ field.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {% elif field.name == 'workshop_address' %}
+                        <div class="col-span-1 md:col-span-2">
+                            <div class="form-floating">
+                                {{ field }}
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }} {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                                </label>
+                            </div>
+                            {% if field.errors %}
+                                <div class="text-red-500 text-sm mt-1 ml-2">{{ field.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {% elif field.name == 'profile_image' %}
+                        <div class="col-span-1 md:col-span-2 mb-4">
+                            <label for="{{ field.id_for_label }}" class="block text-slate-400 text-sm font-semibold mb-2">
+                                {{ field.label }} 
+                                {% if field.field.required %}
+                                    <span class="text-red-500">*</span>
+                                {% endif %}
+                            </label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="text-red-500 text-sm mt-1 ml-2">{{ field.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <div class="col-span-1">
+                            <div class="form-floating">
+                                {{ field }}
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.label }} {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                                </label>
+                                {% if 'password' in field.name %}
+                                <i class="fas fa-eye password-toggle"></i>
+                                {% endif %}
+                            </div>
+                            {% if field.errors %}
+                                <div class="text-red-500 text-sm mt-1 ml-2">{{ field.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="btn-primary-custom mt-4">
+                        Register as Mechanic <i class="fas fa-check-circle"></i>
+                    </button>
+                </form>
+
+                <div class="divider">OR</div>
+
+                <div class="text-center">
+                    <p class="text-slate-400 text-sm mb-3">Already Registered? <a href="{% url 'mechanic_login' %}"
+                            class="font-bold text-amber-500 hover:underline">Mechanic Login</a></p>
+                    <p class="text-slate-400 text-sm mb-0">Looking for help instead? <a
+                            href="{% url 'customer_register' %}"
+                            class="font-bold text-blue-400 hover:underline">Customer Registration</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

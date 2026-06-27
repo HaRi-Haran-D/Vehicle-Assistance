@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}Edit Customer Profile - Vehicle Assist{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white pt-4 pb-0 border-bottom-0">
+                    <h3 class="fw-bold">Edit Profile</h3>
+                </div>
+                <div class="card-body p-4">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <h5 class="mb-3">User Details</h5>
+                        {{ u_form.as_p }}
+                        
+                        {% if p_form %}
+                        <hr class="my-4">
+                        <h5 class="mb-3">Additional Details</h5>
+                        {{ p_form.as_p }}
+                        {% endif %}
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

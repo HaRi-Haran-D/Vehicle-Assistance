@@ -9,6 +9,8 @@ class User(AbstractUser):
     )
     phone = models.CharField(max_length=20, blank=True, null=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='CUSTOMER')
+    profile_image = models.ImageField(upload_to='profiles/', null=True, blank=True)
+    is_verified = models.BooleanField(default=False)
 
     def is_customer(self):
         return self.role == 'CUSTOMER'

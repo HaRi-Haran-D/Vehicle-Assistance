@@ -1,44 +1,85 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
-from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import CreateView, UpdateView, TemplateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
+
 from .models import User, CustomerProfile
-from .forms import CustomUserCreationForm, UserProfileForm, CustomerProfileForm
+from .forms import CustomerRegistrationForm, MechanicRegistrationForm, UserProfileForm, CustomerProfileForm
 from mechanics.models import MechanicProfile
 
-class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'
+class CustomerLoginView(LoginView):
+    template_name = 'auth/customer_login.html'
     
+    def form_valid(self, form):
+        user = form.get_user()
+        if user.is_mechanic():
+            messages.error(self.request, "This account is registered as a Mechanic. Please login through the Mechanic Portal.")
+            return redirect('customer_login')
+        return super().form_valid(form)
+
     def get_success_url(self):
         user = self.request.user
         if user.is_admin():
             return reverse_lazy('admin_dashboard')
-        elif user.is_mechanic():
-            return reverse_lazy('mechanic_dashboard')
         return reverse_lazy('customer_dashboard')
 
-class RegisterView(CreateView):
-    model = User
-    form_class = CustomUserCreationForm
-    template_name = 'accounts/register.html'
+class MechanicLoginView(LoginView):
+    template_name = 'auth/mechanic_login.html'
+    
+    def form_valid(self, form):
+        user = form.get_user()
+        if user.is_customer():
+            messages.error(self.request, "This account is registered as a Customer. Please login through the Customer Portal.")
+            return redirect('mechanic_login')
+        return super().form_valid(form)
 
     def get_success_url(self):
-        user = self.object
-        if user.is_mechanic():
-            return reverse_lazy('mechanic_dashboard')
+        user = self.request.user
+        if user.is_admin():
+            return reverse_lazy('admin_dashboard')
+        return reverse_lazy('mechanic_dashboard')
+
+class CustomerRegisterView(CreateView):
+    model = User
+    form_class = CustomerRegistrationForm
+    template_name = 'auth/customer_register.html'
+
+    def get_success_url(self):
         return reverse_lazy('customer_dashboard')
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        user = self.object
-        if user.is_mechanic():
-            MechanicProfile.objects.create(user=user)
-        login(self.request, user)
-        messages.success(self.request, 'Registration successful.')
+        login(self.request, self.object)
+        messages.success(self.request, 'Customer Registration successful.')
         return response
+
+class MechanicRegisterView(CreateView):
+    model = User
+    form_class = MechanicRegistrationForm
+    template_name = 'auth/mechanic_register.html'
+
+    def get_success_url(self):
+        return reverse_lazy('mechanic_dashboard')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        messages.success(self.request, 'Mechanic Registration successful.')
+        return response
+
+class CustomerDashboardView(LoginRequiredMixin, TemplateView):
+    template_name = 'dashboard/customer/dashboard.html'
+    # Fallback to the base layout or create a new template if needed.
+    # Currently just rendering a placeholder or the actual customer dashboard.
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_customer() and not request.user.is_admin():
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
 class EditProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/edit_profile.html'
@@ -92,8 +133,7 @@ class AdminDashboardView(LoginRequiredMixin, TemplateView):
         context['total_mechanics'] = User.objects.filter(role='MECHANIC').count()
         context['online_mechanics'] = MechanicProfile.objects.filter(is_available=True).count()
         context['pending_requests'] = ServiceRequest.objects.filter(status='REQUESTED').count()
-        context['completed_repairs'] = ServiceRequest.objects.filter(status='COMPLETED').count() # Or PAID
-        # Just simple stats for now to pass context to chart.js
+        context['completed_repairs'] = ServiceRequest.objects.filter(status='COMPLETED').count()
         return context
 
 def home_view(request):

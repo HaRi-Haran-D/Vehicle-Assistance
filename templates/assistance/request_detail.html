@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Request Details - Vehicle Assist{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white pt-4 pb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="fw-bold mb-0">Request #{{ object.id }}</h3>
+                        <span class="badge bg-{{ object.status|lower }} px-3 py-2 fs-6">{{ object.status }}</span>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-2">Service Type</h5>
+                        <p class="lead">{{ object.get_service_type_display }}</p>
+                    </div>
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-2">Vehicle</h5>
+                        <p>{{ object.vehicle }}</p>
+                    </div>
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-2">Description</h5>
+                        <p>{{ object.description }}</p>
+                    </div>
+                    {% if object.mechanic %}
+                    <div class="mb-4 p-3 bg-light rounded">
+                        <h5 class="text-muted mb-2"><i class="fas fa-wrench me-2"></i>Assigned Mechanic</h5>
+                        <p class="mb-0 fw-bold">{{ object.mechanic.user.get_full_name }} ({{ object.mechanic.garage_name }})</p>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white pb-4 pt-0 border-0">
+                    <a href="{% url 'customer_requests' %}" class="btn btn-outline-secondary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -9,28 +9,30 @@
                 <span class="d-block text-warning">Vehicle broke down?</span>
                 <span class="d-block text-secondary mt-2">Get help on demand.</span>
             </h1>
-            
+
             <p class="lead text-muted mb-5">
                 Connect with nearby certified mechanics instantly. Whether you have a flat tire, battery discharge,
                 engine malfunction, or require immediate towing, our real-time telemetry dispatch network gets you
                 back on the road.
             </p>
-            
+
             <div class="d-flex flex-column flex-sm-row gap-3">
                 <!-- CTA: Request assistance -->
-                <a href="{% url 'register' %}" class="btn btn-primary btn-lg fw-bold px-4 py-3 shadow-sm d-flex align-items-center justify-content-center">
+                <a href="{% url 'customer_register' %}"
+                    class="btn btn-primary btn-lg fw-bold px-4 py-3 shadow-sm d-flex align-items-center justify-content-center">
                     <span class="me-2 text-uppercase tracking-wider">Request assistance</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
-                
+
                 <!-- CTA: Become a Mechanic -->
-                <a href="{% url 'register' %}?role=mechanic" class="btn btn-outline-secondary btn-lg fw-bold px-4 py-3 d-flex align-items-center justify-content-center">
+                <a href="{% url 'mechanic_register' %}"
+                    class="btn btn-outline-secondary btn-lg fw-bold px-4 py-3 d-flex align-items-center justify-content-center">
                     <span class="me-2 text-uppercase tracking-wider">Become a Mechanic</span>
                     <i class="fas fa-wrench"></i>
                 </a>
             </div>
         </div>
-        
+
         <!-- Right Image/Interactive area -->
         <div class="col-lg-6 text-center">
             <div class="card bg-light border-secondary shadow-sm rounded-4 p-5">

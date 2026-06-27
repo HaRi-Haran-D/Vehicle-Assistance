@@ -1,0 +1,11 @@
+<div class="bg-white/90 backdrop-blur-sm rounded-full p-1 shadow-sm border border-slate-200 inline-block">
+    <div class="flex items-center">
+        {% if is_customer %}
+        <span class="bg-customer-primary text-white rounded-full font-bold px-6 py-2 shadow-sm">Customer</span>
+        <a href="{% url 'mechanic_login' %}" class="bg-transparent hover:bg-slate-100 rounded-full px-6 py-2 text-slate-500 font-medium transition-colors">Mechanic</a>
+        {% else %}
+        <a href="{% url 'customer_login' %}" class="bg-transparent hover:bg-slate-100 rounded-full px-6 py-2 text-slate-500 font-medium transition-colors">Customer</a>
+        <span class="bg-mechanic-accent text-slate-900 rounded-full font-bold px-6 py-2 shadow-sm">Mechanic</span>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Dashboard - Vehicle Assist{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Customer Dashboard</h2>
+        <a href="{% url 'create_request' %}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>New Service Request</a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title opacity-75">Active Requests</h5>
+                    <h2 class="display-4 fw-bold mb-0">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title opacity-75">Completed Services</h5>
+                    <h2 class="display-4 fw-bold mb-0">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white h-100 border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title opacity-75">My Vehicles</h5>
+                    <h2 class="display-4 fw-bold mb-0">0</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <h4 class="mb-4">Recent Activity</h4>
+            <p class="text-muted">Welcome to your new dashboard! Your service history and active requests will appear here.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
