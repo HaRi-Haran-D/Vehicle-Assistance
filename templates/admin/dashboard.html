@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h2 class="fw-bold">Admin Dashboard</h2>
+        <p class="text-muted">Overview of platform activities</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-users"></i> Total Users</h5>
+                <p class="card-text display-4">{{ total_users }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-wrench"></i> Mechanics</h5>
+                <p class="card-text display-4">{{ total_mechanics }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-clock"></i> Pending Requests</h5>
+                <p class="card-text display-4">{{ pending_requests }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-check-circle"></i> Completed Repairs</h5>
+                <p class="card-text display-4">{{ completed_repairs }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Activity Overview</h5>
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('activityChart');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Users', 'Mechanics', 'Pending', 'Completed'],
+            datasets: [{
+                label: 'Count',
+                data: [{{ total_users }}, {{ total_mechanics }}, {{ pending_requests }}, {{ completed_repairs }}],
+                borderWidth: 1,
+                backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#0dcaf0']
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+{% endblock %}

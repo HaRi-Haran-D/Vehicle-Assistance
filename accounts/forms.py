@@ -1,17 +1,33 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User
+from .models import User, CustomerProfile
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'email', 'phone', 'role')
+        fields = ('username', 'email', 'phone', 'role', 'first_name', 'last_name')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'password1' in self.fields:
-            self.fields['password1'].help_text = ''
-        if 'password2' in self.fields:
-            self.fields['password2'].help_text = ''
         for field in self.fields.values():
-            field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary sm:text-sm'
+            field.widget.attrs['class'] = 'form-control'
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'phone')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
+class CustomerProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomerProfile
+        fields = ('profile_image', 'address', 'city', 'state')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'

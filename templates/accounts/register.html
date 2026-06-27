@@ -1,94 +1,52 @@
 {% extends 'base.html' %}
-
-{% block title %}Register - AutoAssist Dispatch{% endblock %}
-
-{% block extra_head %}
-<style>
-    /* Styling form fields locally for technical look */
-    input[type="text"], input[type="password"], input[type="email"], select {
-        font-family: 'JetBrains Mono', monospace !important;
-        font-size: 0.875rem !important;
-        background-color: rgba(248, 250, 252, 0.8) !important;
-        border: 1px solid rgba(148, 163, 184, 0.4) !important;
-        border-radius: 0.5rem !important;
-        color: #0f172a !important;
-        padding: 0.625rem 0.875rem !important;
-        transition: all 0.2s ease !important;
-    }
-    input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus, select:focus {
-        border-color: #233D4D !important;
-        box-shadow: 0 0 0 3px rgba(35, 61, 77, 0.15) !important;
-        background-color: #ffffff !important;
-        outline: none !important;
-    }
-</style>
-{% endblock %}
+{% block title %}Register - Vehicle Assist{% endblock %}
 
 {% block content %}
-<div class="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
-    
-    <!-- Background grid lines -->
-    <div class="absolute left-[20%] top-0 bottom-0 w-px tech-line-v opacity-10"></div>
-    <div class="absolute right-[20%] top-0 bottom-0 w-px tech-line-v opacity-10"></div>
-
-    <div class="max-w-md w-full tech-panel tech-corner-brackets rounded-2xl p-8 border border-slate-300 bg-white/80 shadow-2xl relative overflow-hidden">
-        <div class="corner-bottom"></div>
-        
-        <!-- Rotating gear watermark inside register card -->
-        <div class="absolute right-[-20px] top-[-20px] w-28 h-28 text-slate-200/50 pointer-events-none z-0">
-            <svg class="w-full h-full animate-spin-slow-reverse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-        </div>
-
-        <div class="relative z-10">
-            <div class="text-center mb-6">
-                <span class="font-mono text-[10px] text-primary-600 font-bold uppercase tracking-wider block mb-1">[ PROFILE_CREATION_PORTAL ]</span>
-                <h2 class="text-3xl font-extrabold text-slate-800">
-                    Create Account
-                </h2>
-            </div>
-            
-            <form class="space-y-5" method="POST">
-                {% csrf_token %}
-                <div class="space-y-4">
+<div class="row justify-content-center align-items-center min-vh-75 mt-5">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+                    <h2 class="fw-bold text-dark">Create Account</h2>
+                    <p class="text-muted">Join the Vehicle Assist network</p>
+                </div>
+                
+                <form method="POST">
+                    {% csrf_token %}
+                    
                     {% for field in form %}
-                        <div>
-                            <label for="{{ field.id_for_label }}" class="block text-xs font-mono font-bold text-slate-500 uppercase tracking-wide mb-1 flex justify-between">
-                                <span>{{ field.label }}</span>
-                                {% if field.field.required %}<span class="text-blueprint-orange text-[9px]">[REQ]</span>{% endif %}
-                            </label>
-                            {{ field }}
-                            {% if field.errors %}
-                                <p class="text-red-500 font-mono text-[10px] mt-1">{{ field.errors.0 }}</p>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-
-                {% if form.non_field_errors %}
-                    <div class="text-red-600 font-mono text-xs text-center bg-red-50 p-2.5 rounded-lg border border-red-150">
-                        [ERROR] {{ form.non_field_errors.0 }}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label fw-semibold text-secondary">
+                            {{ field.label }}
+                            {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                        </label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger small mt-1">{{ field.errors.0 }}</div>
+                        {% endif %}
                     </div>
-                {% endif %}
+                    {% endfor %}
 
-                <div class="pt-2">
-                    <button type="submit" class="group relative w-full flex flex-col items-center justify-center py-3 px-4 border border-transparent rounded-xl text-white bg-primary-600 hover:bg-primary-700 transition shadow-lg shadow-primary-100 overflow-hidden">
-                        <span class="relative z-10 font-mono text-[9px] opacity-75 font-normal">[ CMD: REG_INITIATE ]</span>
-                        <span class="relative z-10 font-mono text-sm uppercase tracking-wider font-bold">Register Account</span>
-                        <span class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
-                    </button>
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger p-2 small text-center">
+                            {{ form.non_field_errors.0 }}
+                        </div>
+                    {% endif %}
+
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold">
+                            Register Account <i class="fas fa-user-check ms-1"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="text-center mt-4 pt-3 border-top">
+                    <p class="text-muted small mb-0">
+                        Already registered? 
+                        <a href="{% url 'login' %}" class="text-decoration-none fw-bold">Sign In here</a>
+                    </p>
                 </div>
-            </form>
-            
-            <div class="text-center mt-6 border-t border-slate-200/60 pt-4">
-                <p class="text-xs text-slate-500">
-                    Already registered? 
-                    <a href="{% url 'login' %}" class="font-mono font-bold text-primary-600 hover:text-primary-800 hover:underline">
-                        [ LOGIN ]
-                    </a>
-                </p>
             </div>
         </div>
     </div>
