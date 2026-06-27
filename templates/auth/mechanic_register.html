@@ -52,7 +52,9 @@
                                 <label for="{{ field.id_for_label }}"
                                     class="text-slate-400 text-sm cursor-pointer">
                                     I accept the <a href="#" class="text-amber-500 font-semibold hover:underline">Terms and Conditions</a>
-                                    {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                                    {% if field.field.required %}
+                                        <span class="text-red-500">*</span>
+                                    {% endif %}
                                 </label>
                             </div>
                             {% if field.errors %}
@@ -64,7 +66,10 @@
                             <div class="form-floating">
                                 {{ field }}
                                 <label for="{{ field.id_for_label }}">
-                                    {{ field.label }} {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                                    {{ field.label }} 
+                                    {% if field.field.required %}
+                                        <span class="text-red-500">*</span>
+                                    {% endif %}
                                 </label>
                             </div>
                             {% if field.errors %}
@@ -89,7 +94,10 @@
                             <div class="form-floating">
                                 {{ field }}
                                 <label for="{{ field.id_for_label }}">
-                                    {{ field.label }} {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                                    {{ field.label }} 
+                                    {% if field.field.required %}
+                                        <span class="text-red-500">*</span>
+                                    {% endif %}
                                 </label>
                                 {% if 'password' in field.name %}
                                 <i class="fas fa-eye password-toggle"></i>

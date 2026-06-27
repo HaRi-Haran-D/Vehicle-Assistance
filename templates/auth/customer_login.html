@@ -3,31 +3,36 @@
 {% block body_class %}theme-customer{% endblock %}
 
 {% block role_switcher %}
-    {% include 'components/auth/role_switcher.html' with is_customer=True %}
+{% include 'components/auth/role_switcher.html' with is_customer=True %}
 {% endblock %}
 
 {% block content %}
 <div class="flex flex-col lg:flex-row w-full min-h-screen m-0">
     <!-- Left Split (Illustration) -->
-    <div class="hidden lg:flex w-5/12 bg-primary-custom text-white relative flex-col justify-center p-16 overflow-hidden">
+    <div
+        class="hidden lg:flex w-5/12 bg-primary-custom text-white relative flex-col justify-center p-16 overflow-hidden">
         <!-- Floating decorative shapes -->
-        <div class="absolute opacity-25 top-[10%] right-[10%] w-[150px] h-[150px] rounded-full" style="background: radial-gradient(circle, var(--color-customer-accent) 0%, transparent 70%);"></div>
-        <div class="absolute opacity-25 bottom-[10%] left-[-5%] w-[250px] h-[250px] rounded-full" style="background: radial-gradient(circle, var(--color-customer-accent) 0%, transparent 70%);"></div>
-        
+        <div class="absolute opacity-25 top-[10%] right-[10%] w-[150px] h-[150px] rounded-full"
+            style="background: radial-gradient(circle, var(--color-customer-accent) 0%, transparent 70%);"></div>
+        <div class="absolute opacity-25 bottom-[10%] left-[-5%] w-[250px] h-[250px] rounded-full"
+            style="background: radial-gradient(circle, var(--color-customer-accent) 0%, transparent 70%);"></div>
+
         <div class="z-10 text-center mt-20">
             <div class="floating-img mb-12 relative inline-block">
                 <i class="fas fa-car-side text-7xl text-white drop-shadow-lg"></i>
                 <i class="fas fa-wrench text-3xl text-amber-400 absolute -top-4 -right-4 drop-shadow-md"></i>
             </div>
             <h1 class="text-4xl lg:text-5xl font-bold mb-6 leading-tight">Get Back on the Road Faster</h1>
-            <p class="text-lg opacity-80 max-w-md mx-auto">Request instant roadside assistance from nearby certified mechanics.</p>
+            <p class="text-lg opacity-80 max-w-md mx-auto">Request instant roadside assistance from nearby certified
+                mechanics.</p>
         </div>
     </div>
 
     <!-- Right Split (Form) -->
     <div class="w-full lg:w-7/12 relative flex flex-col justify-center p-8 lg:p-16 min-h-screen">
         <!-- Background Pattern -->
-        <div class="absolute inset-0 opacity-10 -z-10" style="background-image: radial-gradient(#cbd5e1 2px, transparent 2px); background-size: 30px 30px;"></div>
+        <div class="absolute inset-0 opacity-10 -z-10"
+            style="background-image: radial-gradient(#cbd5e1 2px, transparent 2px); background-size: 30px 30px;"></div>
 
         <div class="w-full max-w-xl mx-auto mt-20 lg:mt-0">
             <div class="auth-card">
@@ -40,26 +45,35 @@
 
                 <form method="POST" class="auth-form mt-8">
                     {% csrf_token %}
-                    
+
                     <div class="form-floating">
-                        <input type="email" name="{{ form.username.name }}" class="form-control" id="id_username" placeholder=" " required>
+                        <input type="email" name="{{ form.username.name }}" class="form-control" id="id_username"
+                            placeholder=" " required>
                         <label for="id_username"><i class="far fa-envelope mr-2"></i>Email Address</label>
-                        {% if form.username.errors %}<div class="text-red-500 text-sm mt-1 ml-2">{{ form.username.errors.0 }}</div>{% endif %}
+                        {% if form.username.errors %}
+                            <div class="text-red-500 text-sm mt-1 ml-2">{{ form.username.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="form-floating">
-                        <input type="password" name="{{ form.password.name }}" class="form-control pr-12" id="id_password" placeholder=" " required>
+                        <input type="password" name="{{ form.password.name }}" class="form-control pr-12"
+                            id="id_password" placeholder=" " required>
                         <label for="id_password"><i class="fas fa-lock mr-2"></i>Password</label>
                         <i class="fas fa-eye password-toggle"></i>
-                        {% if form.password.errors %}<div class="text-red-500 text-sm mt-1 ml-2">{{ form.password.errors.0 }}</div>{% endif %}
+                        {% if form.password.errors %}
+                            <div class="text-red-500 text-sm mt-1 ml-2">{{ form.password.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="flex justify-between items-center mb-8 px-2">
                         <div class="flex items-center gap-2">
-                            <input class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer" type="checkbox" id="rememberMe">
+                            <input
+                                class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded focus:ring-blue-500 cursor-pointer"
+                                type="checkbox" id="rememberMe">
                             <label class="text-slate-500 text-sm cursor-pointer" for="rememberMe">Remember Me</label>
                         </div>
-                        <a href="#" class="text-primary-custom text-sm font-semibold hover:underline">Forgot Password?</a>
+                        <a href="#" class="text-primary-custom text-sm font-semibold hover:underline">Forgot
+                            Password?</a>
                     </div>
 
                     <button type="submit" class="btn-primary-custom">
@@ -70,8 +84,10 @@
                 <div class="divider">OR</div>
 
                 <div class="text-center">
-                    <p class="text-slate-500 text-sm mb-3">New here? <a href="{% url 'customer_register' %}" class="font-bold text-primary-custom hover:underline">Create Customer Account</a></p>
-                    <p class="text-slate-500 text-sm mb-0">Are you a professional? <a href="{% url 'mechanic_login' %}" class="font-bold text-slate-600 hover:underline">Mechanic Login</a></p>
+                    <p class="text-slate-500 text-sm mb-3">New here? <a href="{% url 'customer_register' %}"
+                            class="font-bold text-blue-500 hover:underline">Create Customer Account</a></p>
+                    <p class="text-slate-500 text-sm mb-0">Are you a professional? <a href="{% url 'mechanic_login' %}"
+                            class="font-bold text-slate-600 hover:underline">Mechanic Login</a></p>
                 </div>
             </div>
         </div>

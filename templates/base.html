@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,135 +7,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Vehicle Assistance{% endblock %}</title>
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
-    <style>
+    <style type="text/tailwindcss">
+        @theme {
+            --font-sans: 'Inter', sans-serif;
+            --color-brand-primary: #3b82f6; /* Blue 500 */
+            --color-brand-secondary: #f59e0b; /* Amber 500 */
+        }
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa;
+            font-family: var(--font-sans);
+            @apply bg-slate-50 text-slate-900;
+        }
+        
+        .glass-nav {
+            @apply sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200;
         }
 
         .sidebar {
-            min-height: 100vh;
-            background-color: #343a40;
-            color: white;
-            padding-top: 20px;
+            @apply bg-slate-900 text-slate-300 min-h-screen pt-20 border-r border-slate-800 flex flex-col fixed w-64 z-40 transition-transform duration-300;
         }
-
         .sidebar a {
-            color: #adb5bd;
-            text-decoration: none;
-            display: block;
-            padding: 10px 20px;
+            @apply block px-6 py-3 font-medium transition-all hover:bg-slate-800 hover:text-white border-l-2 border-transparent hover:border-brand-primary;
         }
-
-        .sidebar a:hover,
         .sidebar a.active {
-            background-color: #495057;
-            color: white;
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-        }
-
-        .card {
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            @apply bg-slate-800 text-white border-brand-primary;
         }
 
         .content-area {
-            padding: 20px;
+            @apply min-h-screen pt-8 transition-all duration-300;
+        }
+        .with-sidebar .content-area {
+            @apply md:ml-64 p-8;
+        }
+        
+        .btn-brand {
+            @apply bg-brand-primary text-white font-semibold py-2 px-6 rounded-full hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/30 transition-all transform hover:-translate-y-0.5;
+        }
+        .btn-outline {
+            @apply bg-transparent text-slate-600 font-semibold py-2 px-6 rounded-full border border-slate-300 hover:bg-slate-100 transition-all;
+        }
+
+        /* Base Card Styling for inner pages */
+        .card-premium {
+            @apply bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden;
         }
     </style>
     {% block extra_head %}{% endblock %}
 </head>
 
-<body>
+<body class="{% if user.is_authenticated %}with-sidebar bg-slate-100{% endif %}">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="{% url 'home' %}"><i class="fas fa-car-crash"></i> Vehicle Assist</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
+    <!-- Premium Navbar -->
+    <nav class="glass-nav {% if user.is_authenticated %}fixed w-full{% endif %}">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-15">
+                <div class="flex items-center">
+                    <a href="{% url 'home' %}"
+                        class="flex items-center gap-3 text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+                        <i class="fas fa-car-crash text-blue-600"></i> Vehicle Assist
+                    </a>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-6">
                     {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <span class="nav-link">Welcome, {{ user.username }}</span>
-                    </li>
-                    <li class="nav-item">
+                    <div class="flex items-center gap-4">
+                        <span class="text-slate-600 font-medium">
+                            <i class="fas fa-user-circle text-slate-400 mr-2 text-xl align-middle"></i>
+                            Hello, <span class="font-bold text-slate-800">{{ user.username }}</span>
+                        </span>
                         <form method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-light btn-sm ms-2 mt-1">Logout</button>
+                            <button type="submit"
+                                class="btn-outline text-sm py-1.5 px-4 text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600">
+                                <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                            </button>
                         </form>
-                    </li>
+                    </div>
                     {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'customer_login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'mechanic_login' %}">SignUp</a>
-                    </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link" href="{% url 'customer_register' %}">Customer Register</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'mechanic_register' %}">Mechanic Register</a>
-                    </li> -->
+                    <a href="{% url 'customer_login' %}"
+                        class="font-medium text-slate-600 hover:text-blue-600 transition-colors">Login</a>
+                    <a href="{% url 'customer_register' %}" class="btn-brand">Sign Up</a>
                     {% endif %}
-                </ul>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="flex items-center md:hidden">
+                    <button class="text-slate-500 hover:text-slate-900 focus:outline-none text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
-            {% if user.is_authenticated %}
-            <div class="col-md-2 sidebar d-none d-md-block">
-                {% if user.is_customer %}
-                <a href="{% url 'customer_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="{% url 'vehicle_list' %}"><i class="fas fa-car"></i> My Vehicles</a>
-                <a href="{% url 'customer_requests' %}"><i class="fas fa-tools"></i> Service Requests</a>
-                <a href="{% url 'edit_profile' %}"><i class="fas fa-user-edit"></i> Edit Profile</a>
-                {% elif user.is_mechanic %}
-                <a href="{% url 'mechanic_dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
-                <a href="{% url 'mechanic_jobs' %}"><i class="fas fa-wrench"></i> Job Requests</a>
-                <a href="{% url 'mechanic_reviews' %}"><i class="fas fa-star"></i> My Reviews</a>
-                <a href="{% url 'mechanic_profile_edit' %}"><i class="fas fa-user-edit"></i> Edit Profile</a>
-                {% elif user.is_admin %}
-                <a href="{% url 'admin_dashboard' %}"><i class="fas fa-chart-line"></i> Analytics</a>
-                {% endif %}
-            </div>
-            <div class="col-md-10 content-area">
-                {% else %}
-                <div class="col-md-12 content-area">
-                    {% endif %}
-
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-
-                    {% block content %}
-                    {% endblock %}
-
-                </div>
-            </div>
+    {% if user.is_authenticated %}
+    <!-- Sidebar -->
+    <div class="sidebar hidden md:flex">
+        <div class="px-6 py-4 mb-4">
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                {% if user.is_customer %}Customer Panel{% elif user.is_mechanic %}Mechanic Portal{% else %}Admin
+                Console{% endif %}
+            </p>
         </div>
 
-        <!-- Bootstrap 5 JS Bundle -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-        {% block extra_js %}{% endblock %}
+        {% if user.is_customer %}
+        <a href="{% url 'customer_dashboard' %}"><i class="fas fa-home w-6 text-center mr-2"></i> Dashboard</a>
+        <a href="{% url 'vehicle_list' %}"><i class="fas fa-car w-6 text-center mr-2"></i> My Vehicles</a>
+        <a href="{% url 'customer_requests' %}"><i class="fas fa-tools w-6 text-center mr-2"></i> Service Requests</a>
+        <a href="{% url 'edit_profile' %}"><i class="fas fa-user-edit w-6 text-center mr-2"></i> Edit Profile</a>
+        {% elif user.is_mechanic %}
+        <a href="{% url 'mechanic_dashboard' %}"><i class="fas fa-home w-6 text-center mr-2"></i> Dashboard</a>
+        <a href="{% url 'mechanic_jobs' %}"><i class="fas fa-wrench w-6 text-center mr-2"></i> Job Requests</a>
+        <a href="{% url 'mechanic_reviews' %}"><i class="fas fa-star w-6 text-center mr-2"></i> My Reviews</a>
+        <a href="{% url 'mechanic_profile_edit' %}"><i class="fas fa-user-edit w-6 text-center mr-2"></i> Edit
+            Profile</a>
+        {% elif user.is_admin %}
+        <a href="{% url 'admin_dashboard' %}"><i class="fas fa-chart-line w-6 text-center mr-2"></i> Analytics</a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="content-area">
+        <div class="max-w-7xl mx-auto w-full {% if not user.is_authenticated %}px-4 sm:px-6 lg:px-8{% endif %}">
+
+            {% if messages %}
+            <div class="mb-6 space-y-3 px-4 md:px-0">
+                {% for message in messages %}
+                <div class="relative p-4 rounded-xl text-sm border shadow-sm
+                        {% if message.tags == 'success' %}bg-green-50 text-green-800 border-green-200
+                        {% elif message.tags == 'error' or message.tags == 'danger' %}bg-red-50 text-red-800 border-red-200
+                        {% elif message.tags == 'warning' %}bg-yellow-50 text-yellow-800 border-yellow-200
+                        {% else %}bg-blue-50 text-blue-800 border-blue-200{% endif %}" role="alert">
+                    <i class="fas fa-info-circle mr-2"></i> {{ message }}
+                    <button type="button"
+                        class="absolute top-4 right-4 text-slate-400 hover:text-slate-900 focus:outline-none"
+                        onclick="this.parentElement.style.display='none';">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+    </main>
+
+    {% block extra_js %}{% endblock %}
 </body>
 
 </html>

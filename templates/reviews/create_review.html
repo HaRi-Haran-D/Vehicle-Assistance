@@ -1,24 +1,46 @@
 {% extends 'base.html' %}
 {% block title %}Write a Review - Vehicle Assist{% endblock %}
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white pt-4 pb-0 border-bottom-0">
-                    <h3 class="fw-bold">Write a Review</h3>
-                    <p class="text-muted">How was your experience with the mechanic?</p>
-                </div>
-                <div class="card-body p-4">
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <div class="d-grid mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">Submit Review</button>
-                        </div>
-                    </form>
-                </div>
+<div class="w-full max-w-2xl mx-auto py-12">
+    <div class="card-premium p-8 border-t-4 border-amber-500 shadow-lg relative overflow-hidden">
+        <div class="absolute -right-4 -top-4 opacity-5">
+            <i class="fas fa-star text-9xl"></i>
+        </div>
+        
+        <div class="relative z-10">
+            <div class="mb-8 border-b border-slate-100 pb-4">
+                <h3 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
+                    <i class="fas fa-pen-nib text-amber-500"></i>
+                    Write a Review
+                </h3>
+                <p class="text-slate-500 mt-1">How was your experience with the mechanic?</p>
             </div>
+            
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-slate-700 mb-2">
+                        {{ field.label }} {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
+                    </label>
+                    <div class="mt-1">
+                        <div class="[&>input]:w-full [&>input]:rounded-xl [&>input]:border-slate-300 [&>input]:shadow-sm [&>input]:focus:border-amber-500 [&>input]:focus:ring-amber-500 [&>select]:w-full [&>select]:rounded-xl [&>select]:border-slate-300 [&>select]:shadow-sm [&>select]:focus:border-amber-500 [&>select]:focus:ring-amber-500 [&>textarea]:w-full [&>textarea]:rounded-xl [&>textarea]:border-slate-300 [&>textarea]:shadow-sm [&>textarea]:focus:border-amber-500 [&>textarea]:focus:ring-amber-500">
+                            {{ field }}
+                        </div>
+                    </div>
+                    {% if field.errors %}
+                        <p class="text-red-500 text-sm mt-1 flex items-center gap-1"><i class="fas fa-exclamation-circle"></i> {{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="pt-6 mt-8">
+                    <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+                        Submit Review <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

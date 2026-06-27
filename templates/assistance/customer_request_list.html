@@ -1,31 +1,71 @@
 {% extends 'base.html' %}
 {% block title %}My Service Requests - Vehicle Assist{% endblock %}
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">My Service Requests</h2>
-        <a href="{% url 'create_request' %}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>New Request</a>
-    </div>
-    <div class="list-group shadow-sm">
-        {% for request in object_list %}
-        <a href="{% url 'request_detail' request.pk %}" class="list-group-item list-group-item-action p-4 border-0 border-bottom">
-            <div class="d-flex w-100 justify-content-between align-items-center">
-                <h5 class="mb-1 fw-bold">{{ request.get_service_type_display }}</h5>
-                <small class="text-muted">{{ request.created_at|date:"M d, Y" }}</small>
-            </div>
-            <p class="mb-1 text-muted">{{ request.description|truncatewords:20 }}</p>
-            <div class="mt-2">
-                <span class="badge bg-{{ request.status|lower }}">{{ request.status }}</span>
-                <span class="small text-muted ms-2"><i class="fas fa-car me-1"></i> {{ request.vehicle }}</span>
-            </div>
-        </a>
-        {% empty %}
-        <div class="text-center py-5">
-            <i class="fas fa-tools fa-3x text-muted mb-3 opacity-25"></i>
-            <h4>No requests found</h4>
-            <p class="text-muted">You have no service requests at the moment.</p>
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+        <div>
+            <h2 class="text-3xl font-bold text-slate-800">My Service Requests</h2>
+            <p class="text-slate-500 mt-1">Track and manage your emergency roadside assistance</p>
         </div>
-        {% endfor %}
+        <a href="{% url 'create_request' %}" class="btn-brand flex items-center gap-2">
+            <i class="fas fa-plus"></i> New Request
+        </a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mt-6">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm whitespace-nowrap">
+                <thead class="uppercase tracking-wider border-b-2 border-slate-200 bg-slate-50 text-slate-500 font-bold">
+                    <tr>
+                        <th scope="col" class="px-6 py-4">Service Type</th>
+                        <th scope="col" class="px-6 py-4">Vehicle</th>
+                        <th scope="col" class="px-6 py-4">Status</th>
+                        <th scope="col" class="px-6 py-4">Date</th>
+                        <th scope="col" class="px-6 py-4 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for req in object_list %}
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 font-medium text-slate-800">
+                            {{ req.get_service_type_display }}
+                        </td>
+                        <td class="px-6 py-4 text-slate-600">
+                            {{ req.vehicle.make }} {{ req.vehicle.model }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if req.status == 'REQUESTED' %}
+                                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold">Requested</span>
+                            {% elif req.status == 'ACCEPTED' %}
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold">Accepted</span>
+                            {% elif req.status == 'IN_PROGRESS' %}
+                                <span class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold">In Progress</span>
+                            {% elif req.status == 'COMPLETED' %}
+                                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold">Completed</span>
+                            {% else %}
+                                <span class="px-3 py-1 bg-slate-100 text-slate-800 rounded-full text-xs font-bold">{{ req.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-slate-500 text-xs">
+                            {{ req.created_at|date:"M d, Y H:i" }}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <a href="{% url 'request_detail' req.pk %}" class="text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-3 py-2 rounded-lg font-medium transition-colors">
+                                View Details
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-16 text-center text-slate-500">
+                            <i class="fas fa-clipboard-list fa-2x mb-3 text-slate-300"></i>
+                            <p>No service requests found.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

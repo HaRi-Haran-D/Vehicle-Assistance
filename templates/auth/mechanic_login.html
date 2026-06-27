@@ -12,7 +12,9 @@
     <div class="hidden lg:flex w-5/12 bg-primary-custom text-white relative flex-col justify-center p-16 overflow-hidden"
         style="background: linear-gradient(135deg, #111827 0%, #1f2937 100%);">
 
-        <div class="absolute opacity-10 top-[20%] left-[10%] w-[200px] h-[200px] border-[20px] border-amber-500 rounded-3xl rotate-45"></div>
+        <div
+            class="absolute opacity-10 top-[20%] left-[10%] w-[200px] h-[200px] border-[20px] border-amber-500 rounded-3xl rotate-45">
+        </div>
         <div class="absolute opacity-10 bottom-[10%] -right-[5%] w-[150px] h-[150px] bg-amber-500 rounded-full"></div>
 
         <div class="z-10 text-center mt-20">
@@ -48,7 +50,9 @@
                         <input type="email" name="{{ form.username.name }}" class="form-control" id="id_username"
                             placeholder=" " required>
                         <label for="id_username"><i class="far fa-envelope mr-2"></i>Email Address</label>
-                        {% if form.username.errors %}<div class="text-red-500 text-sm mt-1 ml-2">{{ form.username.errors.0 }}</div>{% endif %}
+                        {% if form.username.errors %}
+                        <div class="text-red-500 text-sm mt-1 ml-2">{{ form.username.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="form-floating">
@@ -56,20 +60,23 @@
                             id="id_password" placeholder=" " required>
                         <label for="id_password"><i class="fas fa-lock mr-2"></i>Password</label>
                         <i class="fas fa-eye password-toggle"></i>
-                        {% if form.password.errors %}<div class="text-red-500 text-sm mt-1 ml-2">{{ form.password.errors.0 }}</div>{% endif %}
+                        {% if form.password.errors %}
+                        <div class="text-red-500 text-sm mt-1 ml-2">{{ form.password.errors.0 }}</div>
+                        {% endif %}
                     </div>
 
                     <div class="flex justify-between items-center mb-8 px-2">
                         <div class="flex items-center gap-2">
-                            <input class="w-4 h-4 text-amber-500 bg-slate-800 border-slate-600 rounded focus:ring-amber-500 cursor-pointer" type="checkbox"
-                                id="rememberMe">
+                            <input
+                                class="w-4 h-4 text-amber-500 bg-slate-800 border-slate-600 rounded focus:ring-amber-500 cursor-pointer"
+                                type="checkbox" id="rememberMe">
                             <label class="text-slate-400 text-sm cursor-pointer" for="rememberMe">Remember Me</label>
                         </div>
-                        <a href="#" class="text-primary-custom text-sm font-semibold hover:underline">Forgot Password?</a>
+                        <a href="#" class="text-primary-custom text-sm font-semibold hover:underline">Forgot
+                            Password?</a>
                     </div>
 
-                    <button type="submit"
-                        class="btn-primary-custom">
+                    <button type="submit" class="btn-primary-custom">
                         Login as Mechanic <i class="fas fa-wrench"></i>
                     </button>
                 </form>

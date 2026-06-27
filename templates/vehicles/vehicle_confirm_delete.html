@@ -1,23 +1,27 @@
 {% extends 'base.html' %}
 {% block title %}Delete Vehicle - Vehicle Assist{% endblock %}
 {% block content %}
-<div class="container py-5 text-center">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm border-0 border-top border-danger border-5">
-                <div class="card-body p-5">
-                    <i class="fas fa-exclamation-triangle fa-3x text-danger mb-4"></i>
-                    <h3 class="fw-bold mb-3">Confirm Deletion</h3>
-                    <p class="text-muted mb-4">Are you sure you want to delete your <strong>{{ object.make }} {{ object.model }}</strong>?</p>
-                    <form method="POST">
-                        {% csrf_token %}
-                        <div class="d-flex justify-content-center gap-3">
-                            <a href="{% url 'vehicle_list' %}" class="btn btn-outline-secondary px-4">Cancel</a>
-                            <button type="submit" class="btn btn-danger px-4">Delete</button>
-                        </div>
-                    </form>
-                </div>
+<div class="max-w-md mx-auto py-12">
+    <div class="card-premium text-center border-t-4 border-red-500 shadow-xl">
+        <div class="p-8">
+            <div class="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-exclamation-triangle text-4xl"></i>
             </div>
+            <h3 class="text-2xl font-bold text-slate-800 mb-2">Confirm Deletion</h3>
+            <p class="text-slate-500 mb-8">
+                Are you sure you want to delete your <br>
+                <strong class="text-slate-800 text-lg">{{ object.make }} {{ object.model }}</strong>?<br>
+                <span class="text-sm mt-2 block text-slate-400">This action cannot be undone.</span>
+            </p>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="flex flex-col sm:flex-row justify-center gap-3">
+                    <a href="{% url 'vehicle_list' %}" class="btn-outline px-6 sm:flex-1 text-slate-600 order-2 sm:order-1">Cancel</a>
+                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full transition-colors shadow-md hover:shadow-lg sm:flex-1 order-1 sm:order-2">
+                        <i class="fas fa-trash-alt mr-2"></i> Delete
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

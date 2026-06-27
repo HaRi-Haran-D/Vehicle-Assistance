@@ -1,30 +1,66 @@
 {% extends 'base.html' %}
-{% block title %}Job Requests - Vehicle Assist{% endblock %}
+{% block title %}Mechanic Job Requests - Vehicle Assist{% endblock %}
 {% block content %}
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">Job Requests</h2>
-    </div>
-    <div class="list-group shadow-sm">
-        {% for job in object_list %}
-        <a href="#" class="list-group-item list-group-item-action p-4 border-0 border-bottom">
-            <div class="d-flex w-100 justify-content-between align-items-center">
-                <h5 class="mb-1 fw-bold">{{ job.get_service_type_display }}</h5>
-                <small class="text-muted">{{ job.created_at|date:"M d, Y H:i" }}</small>
-            </div>
-            <p class="mb-1 text-muted">{{ job.description|truncatewords:20 }}</p>
-            <div class="mt-2">
-                <span class="badge bg-{{ job.status|lower }}">{{ job.status }}</span>
-                <span class="small text-muted ms-2"><i class="fas fa-map-marker-alt me-1"></i> {{ job.location_lat }}, {{ job.location_lng }}</span>
-            </div>
-        </a>
-        {% empty %}
-        <div class="text-center py-5">
-            <i class="fas fa-check-circle fa-3x text-muted mb-3 opacity-25"></i>
-            <h4>No jobs available</h4>
-            <p class="text-muted">There are no job requests assigned to you or available right now.</p>
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
+        <div>
+            <h2 class="text-3xl font-bold text-slate-800">Job Requests</h2>
+            <p class="text-slate-500 mt-1">Accept and manage roadside assistance calls</p>
         </div>
-        {% endfor %}
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mt-6">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm whitespace-nowrap">
+                <thead class="uppercase tracking-wider border-b-2 border-slate-200 bg-slate-50 text-slate-500 font-bold">
+                    <tr>
+                        <th scope="col" class="px-6 py-4">Customer</th>
+                        <th scope="col" class="px-6 py-4">Service Type</th>
+                        <th scope="col" class="px-6 py-4">Location</th>
+                        <th scope="col" class="px-6 py-4">Status</th>
+                        <th scope="col" class="px-6 py-4 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for job in object_list %}
+                    <tr class="hover:bg-amber-50/50 transition-colors">
+                        <td class="px-6 py-4 font-medium text-slate-800">
+                            {{ job.customer.user.get_full_name|default:job.customer.user.username }}
+                        </td>
+                        <td class="px-6 py-4 text-slate-600 font-semibold text-amber-600">
+                            {{ job.get_service_type_display }}
+                        </td>
+                        <td class="px-6 py-4 text-slate-600 truncate max-w-[200px]" title="{{ job.location }}">
+                            <i class="fas fa-map-marker-alt text-slate-400 mr-1"></i> {{ job.location }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {% if job.status == 'REQUESTED' %}
+                                <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-bold">New</span>
+                            {% elif job.status == 'ACCEPTED' %}
+                                <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold">Accepted</span>
+                            {% elif job.status == 'COMPLETED' %}
+                                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold">Completed</span>
+                            {% else %}
+                                <span class="px-3 py-1 bg-slate-100 text-slate-800 rounded-full text-xs font-bold">{{ job.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <a href="{% url 'request_detail' job.pk %}" class="btn-outline border-amber-300 text-amber-700 hover:bg-amber-50 px-4 py-2 text-xs">
+                                View Job
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-16 text-center text-slate-500">
+                            <i class="fas fa-check-circle fa-2x mb-3 text-emerald-400"></i>
+                            <p>No job requests currently assigned to you.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 {% endblock %}

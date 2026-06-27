@@ -1,40 +1,145 @@
 {% extends 'base.html' %}
-{% block title %}Request Details - Vehicle Assist{% endblock %}
+{% block title %}Service Request Details - Vehicle Assist{% endblock %}
 {% block content %}
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white pt-4 pb-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="fw-bold mb-0">Request #{{ object.id }}</h3>
-                        <span class="badge bg-{{ object.status|lower }} px-3 py-2 fs-6">{{ object.status }}</span>
+<div class="w-full max-w-4xl mx-auto py-8">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4 mb-6">
+        <h2 class="text-3xl font-bold text-slate-800">Request Details</h2>
+        <div class="flex gap-2">
+            <a href="{% if user.role == 'CUSTOMER' %}{% url 'customer_requests' %}{% else %}{% url 'mechanic_jobs' %}{% endif %}" class="btn-outline px-4 py-2 text-sm">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Main Details -->
+        <div class="md:col-span-2 space-y-6">
+            <div class="card-premium p-6 border-l-4 {% if object.status == 'COMPLETED' %}border-green-500{% elif object.status == 'IN_PROGRESS' %}border-indigo-500{% elif object.status == 'ACCEPTED' %}border-blue-500{% else %}border-yellow-500{% endif %}">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Service Type</span>
+                        <h3 class="text-2xl font-bold text-slate-800">{{ object.get_service_type_display }}</h3>
+                    </div>
+                    <div>
+                        {% if object.status == 'REQUESTED' %}
+                            <span class="px-4 py-2 bg-yellow-100 text-yellow-800 rounded-full text-sm font-bold shadow-sm">Requested</span>
+                        {% elif object.status == 'ACCEPTED' %}
+                            <span class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-bold shadow-sm">Accepted</span>
+                        {% elif object.status == 'IN_PROGRESS' %}
+                            <span class="px-4 py-2 bg-indigo-100 text-indigo-800 rounded-full text-sm font-bold shadow-sm">In Progress</span>
+                        {% elif object.status == 'COMPLETED' %}
+                            <span class="px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm font-bold shadow-sm">Completed</span>
+                        {% else %}
+                            <span class="px-4 py-2 bg-slate-100 text-slate-800 rounded-full text-sm font-bold shadow-sm">{{ object.get_status_display }}</span>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="card-body p-4">
-                    <div class="mb-4">
-                        <h5 class="text-muted mb-2">Service Type</h5>
-                        <p class="lead">{{ object.get_service_type_display }}</p>
+
+                <div class="space-y-4 mt-6 pt-6 border-t border-slate-100">
+                    <div>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Description</span>
+                        <p class="text-slate-700 mt-1 bg-slate-50 p-4 rounded-xl border border-slate-100">{{ object.description|default:"No additional description provided." }}</p>
                     </div>
-                    <div class="mb-4">
-                        <h5 class="text-muted mb-2">Vehicle</h5>
-                        <p>{{ object.vehicle }}</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Location</span>
+                            <p class="text-slate-700 font-medium"><i class="fas fa-map-marker-alt text-red-500 mr-1"></i> {{ object.location }}</p>
+                        </div>
+                        <div>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Requested At</span>
+                            <p class="text-slate-700 font-medium"><i class="far fa-clock text-slate-400 mr-1"></i> {{ object.created_at|date:"M d, Y H:i" }}</p>
+                        </div>
                     </div>
-                    <div class="mb-4">
-                        <h5 class="text-muted mb-2">Description</h5>
-                        <p>{{ object.description }}</p>
-                    </div>
-                    {% if object.mechanic %}
-                    <div class="mb-4 p-3 bg-light rounded">
-                        <h5 class="text-muted mb-2"><i class="fas fa-wrench me-2"></i>Assigned Mechanic</h5>
-                        <p class="mb-0 fw-bold">{{ object.mechanic.user.get_full_name }} ({{ object.mechanic.garage_name }})</p>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="card-footer bg-white pb-4 pt-0 border-0">
-                    <a href="{% url 'customer_requests' %}" class="btn btn-outline-secondary">Back to List</a>
                 </div>
             </div>
+
+            <!-- Actions (If Customer) -->
+            {% if user.role == 'CUSTOMER' and object.status == 'COMPLETED' and not object.reviews.all %}
+            <div class="card-premium p-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-100">
+                <h4 class="font-bold text-amber-800 mb-2">Rate Your Mechanic</h4>
+                <p class="text-amber-700 text-sm mb-4">Your feedback helps us maintain high quality service.</p>
+                <a href="{% url 'create_review' object.pk %}" class="btn-brand bg-amber-500 hover:bg-amber-600 shadow-sm inline-block">
+                    <i class="fas fa-star mr-1"></i> Write a Review
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Actions (If Mechanic) -->
+            {% if user.role == 'MECHANIC' %}
+            <div class="card-premium p-6">
+                <h4 class="font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Update Job Status</h4>
+                <form method="POST" action="{% url 'update_request_status' object.pk %}" class="flex items-center gap-3">
+                    {% csrf_token %}
+                    <select name="status" class="flex-1 rounded-xl border-slate-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm">
+                        <option value="ACCEPTED" {% if object.status == 'ACCEPTED' %}selected{% endif %}>Accept Job</option>
+                        <option value="IN_PROGRESS" {% if object.status == 'IN_PROGRESS' %}selected{% endif %}>Mark In Progress</option>
+                        <option value="COMPLETED" {% if object.status == 'COMPLETED' %}selected{% endif %}>Mark Completed</option>
+                    </select>
+                    <button type="submit" class="btn-brand px-6">Update</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar Details -->
+        <div class="space-y-6">
+            <!-- Vehicle Info -->
+            <div class="card-premium p-5 border-t-4 border-blue-400">
+                <h4 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-car text-blue-500"></i> Vehicle Information
+                </h4>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between border-b border-slate-50 pb-2">
+                        <span class="text-slate-500">Make & Model</span>
+                        <span class="font-bold text-slate-800">{{ object.vehicle.make }} {{ object.vehicle.model }}</span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-50 pb-2">
+                        <span class="text-slate-500">Year</span>
+                        <span class="font-medium text-slate-800">{{ object.vehicle.year }}</span>
+                    </div>
+                    <div class="flex justify-between pb-1">
+                        <span class="text-slate-500">License Plate</span>
+                        <span class="font-mono bg-slate-100 px-2 py-0.5 rounded text-slate-700">{{ object.vehicle.license_plate }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer/Mechanic Info depending on viewer -->
+            {% if user.role == 'MECHANIC' %}
+            <div class="card-premium p-5 border-t-4 border-amber-400">
+                <h4 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-user text-amber-500"></i> Customer Details
+                </h4>
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold">
+                        {{ object.customer.user.get_full_name|first|default:"C" }}
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-800">{{ object.customer.user.get_full_name|default:"Customer" }}</p>
+                        <p class="text-xs text-slate-500">{{ object.customer.phone_number|default:"No phone provided" }}</p>
+                    </div>
+                </div>
+            </div>
+            {% elif user.role == 'CUSTOMER' and object.mechanic %}
+            <div class="card-premium p-5 border-t-4 border-amber-400">
+                <h4 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-wrench text-amber-500"></i> Assigned Mechanic
+                </h4>
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold">
+                        {{ object.mechanic.user.get_full_name|first|default:"M" }}
+                    </div>
+                    <div>
+                        <p class="font-bold text-slate-800">{{ object.mechanic.user.get_full_name|default:"Mechanic" }}</p>
+                        <p class="text-xs text-slate-500">{{ object.mechanic.phone_number|default:"No phone provided" }}</p>
+                    </div>
+                </div>
+                <div class="text-sm mt-3 pt-3 border-t border-slate-100">
+                    <p class="flex justify-between"><span class="text-slate-500">Workshop:</span> <span class="font-medium text-slate-700">{{ object.mechanic.workshop_name }}</span></p>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
